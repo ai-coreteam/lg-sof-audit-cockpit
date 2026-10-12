@@ -1,0 +1,20 @@
+# Operating system & IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Python caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# AI IDE & local subagents
+.agents/
+.agent/
+scratch/
+.tempmediaStorage/
+
+# Temporary downloads
+data/google_sheet_latest.xlsx

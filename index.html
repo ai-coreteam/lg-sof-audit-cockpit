@@ -1,0 +1,2977 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LG Electronics · SOF Audit & Risk Governance Cockpit</title>
+  <link rel="stylesheet" href="assets/lg-tokens.css">
+  <style>
+    /* -------------------------------------------------------------
+       LG Electronics Brand Identity System (BI V5.2)
+       Strict implementation based on .agents/skills/lg-brand/
+       ------------------------------------------------------------- */
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "LG EI Text", sans-serif;
+      background-color: var(--lg-warm-gray-07);
+      color: var(--lg-warm-gray-01);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* SVG Icon Utility */
+    .icon {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      stroke-width: 2;
+      stroke: currentColor;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vertical-align: middle;
+      flex-shrink: 0;
+    }
+
+    .icon-sm { width: 12px; height: 12px; }
+    .icon-lg { width: 18px; height: 18px; }
+
+    .spinning {
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Top Brand Navigation Bar */
+    .brand-navbar {
+      background: var(--lg-warm-gray-01);
+      color: var(--lg-white);
+      padding: 14px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid var(--lg-active-red);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .brand-logo-area {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .brand-logo-area img.logo-img {
+      height: 30px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .brand-divider {
+      width: 1px;
+      height: 28px;
+      background: var(--lg-warm-gray-03);
+      opacity: 0.5;
+    }
+
+    .brand-title-group h1 {
+      font-family: "LG EI Headline", sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--lg-white);
+    }
+
+    .brand-tag {
+      background: var(--lg-active-red);
+      color: var(--lg-white);
+      font-family: "LG EI Headline", sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .brand-subtitle {
+      font-size: 11px;
+      color: var(--lg-warm-gray-04);
+      margin-top: 2px;
+      font-weight: 400;
+    }
+
+    /* Cycle Switcher in Navbar */
+    .cycle-switcher {
+      display: flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 6px;
+      padding: 3px;
+      gap: 3px;
+    }
+
+    .cycle-btn {
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      border: none;
+      background: transparent;
+      color: var(--lg-warm-gray-04);
+      border-radius: 4px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.18s;
+      font-family: "LG EI Text", sans-serif;
+    }
+
+    .cycle-btn:hover {
+      color: var(--lg-white);
+    }
+
+    .cycle-btn.active {
+      background: var(--lg-active-red);
+      color: var(--lg-white);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Real-Time Live Sync Badge */
+    .live-sync-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--lg-white);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+
+    .live-sync-indicator:hover {
+      background: rgba(255, 255, 255, 0.16);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .live-pulse {
+      width: 8px;
+      height: 8px;
+      background-color: #10b981;
+      border-radius: 50%;
+      display: inline-block;
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      animation: pulse-green 2s infinite;
+    }
+
+    .live-pulse.syncing {
+      background-color: #f59e0b;
+      box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+    }
+
+    @keyframes pulse-green {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .nav-slogan {
+      height: 18px;
+      width: auto;
+      object-fit: contain;
+      opacity: 0.85;
+      margin-left: 6px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 13px;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 4px;
+      cursor: pointer;
+      border: none;
+      transition: all 0.18s ease;
+      font-family: "LG EI Text", sans-serif;
+      white-space: nowrap;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--lg-active-red);
+      color: var(--lg-white);
+    }
+
+    .btn-primary:hover {
+      background: #e02421;
+    }
+
+    .btn-secondary {
+      background: var(--lg-warm-gray-02);
+      color: var(--lg-white);
+      border: 1px solid var(--lg-warm-gray-03);
+    }
+
+    .btn-secondary:hover {
+      background: var(--lg-warm-gray-03);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--lg-warm-gray-04);
+      color: var(--lg-warm-gray-01);
+    }
+
+    .btn-outline:hover {
+      background: var(--lg-warm-gray-06);
+    }
+
+    /* Main Content Container */
+    .container {
+      max-width: 1600px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px 32px;
+      flex: 1;
+    }
+
+    /* Regional Progress & Tabs Bar */
+    .region-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .region-tabs {
+      display: flex;
+      gap: 6px;
+      background: var(--lg-warm-gray-06);
+      padding: 4px;
+      border-radius: 6px;
+      border: 1px solid var(--lg-warm-gray-05);
+    }
+
+    .region-tab-btn {
+      padding: 7px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 4px;
+      border: none;
+      background: transparent;
+      color: var(--lg-warm-gray-02);
+      cursor: pointer;
+      transition: all 0.18s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: "LG EI Text", sans-serif;
+    }
+
+    .region-tab-btn:hover {
+      color: var(--lg-warm-gray-01);
+    }
+
+    .region-tab-btn.active {
+      background: var(--lg-white);
+      color: var(--lg-active-red);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+      font-weight: 700;
+    }
+
+    .badge-count {
+      padding: 2px 7px;
+      border-radius: 10px;
+      font-size: 11px;
+      background: var(--lg-warm-gray-05);
+      color: var(--lg-warm-gray-02);
+      font-weight: 600;
+    }
+
+    .region-tab-btn.active .badge-count {
+      background: rgba(253, 49, 46, 0.1);
+      color: var(--lg-active-red);
+    }
+
+    .badge-alert {
+      background: rgba(165, 0, 52, 0.12);
+      color: var(--lg-red);
+      font-weight: 700;
+    }
+
+    /* 4 Governance Pillar KPI Cards */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .kpi-card {
+      background: var(--lg-white);
+      border-radius: 8px;
+      padding: 18px 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      border: 1px solid var(--lg-warm-gray-05);
+      border-left: 4px solid var(--lg-warm-gray-04);
+      transition: transform 0.18s, box-shadow 0.18s;
+      cursor: pointer;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    }
+
+    .kpi-card.kpi-progress { border-left-color: #059669; }
+    .kpi-card.kpi-pending { border-left-color: #ea580c; }
+    .kpi-card.kpi-critical { border-left-color: var(--lg-active-red); }
+    .kpi-card.kpi-suspicious { border-left-color: #d97706; }
+    .kpi-card.kpi-pc-error { border-left-color: #2563eb; }
+
+    .kpi-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--lg-warm-gray-03);
+      letter-spacing: 0.05em;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .kpi-value {
+      font-family: "LG EI Headline", sans-serif;
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--lg-warm-gray-01);
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+
+    .kpi-subtext {
+      font-size: 12px;
+      color: var(--lg-warm-gray-03);
+    }
+
+    /* Overall Progress Bar */
+    .progress-section {
+      background: var(--lg-white);
+      border: 1px solid var(--lg-warm-gray-05);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-bottom: 22px;
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--lg-warm-gray-02);
+    }
+
+    .progress-bar-bg {
+      height: 8px;
+      background: var(--lg-warm-gray-05);
+      border-radius: 4px;
+      overflow: hidden;
+      display: flex;
+    }
+
+    .progress-bar-fill-done {
+      background: #059669;
+      height: 100%;
+      transition: width 0.4s ease;
+    }
+
+    .progress-bar-fill-suspicious {
+      background: #d97706;
+      height: 100%;
+      transition: width 0.4s ease;
+    }
+
+    /* Quick Filter Action Pills */
+    .quick-pills-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .pill-btn {
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      background: var(--lg-white);
+      border: 1px solid var(--lg-warm-gray-05);
+      color: var(--lg-warm-gray-02);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.16s ease;
+      font-family: "LG EI Text", sans-serif;
+    }
+
+    .pill-btn:hover {
+      border-color: var(--lg-warm-gray-03);
+      color: var(--lg-warm-gray-01);
+    }
+
+    .pill-btn.active {
+      background: var(--lg-warm-gray-01);
+      color: var(--lg-white);
+      border-color: var(--lg-warm-gray-01);
+    }
+
+    .pill-warning { color: #b45309; }
+    .pill-danger { color: var(--lg-active-red); }
+
+    /* Filter Controls Section */
+    .filter-panel {
+      background: var(--lg-white);
+      border: 1px solid var(--lg-warm-gray-05);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-bottom: 22px;
+      display: grid;
+      grid-template-columns: 2fr 1.3fr 1.1fr 1.1fr 1fr 1.1fr;
+      gap: 14px;
+      align-items: end;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .filter-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--lg-warm-gray-02);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .filter-input, .filter-select {
+      height: 38px;
+      padding: 0 12px;
+      border: 1px solid var(--lg-warm-gray-04);
+      border-radius: 4px;
+      font-size: 12px;
+      font-family: "LG EI Text", sans-serif;
+      background: var(--lg-warm-gray-07);
+      color: var(--lg-warm-gray-01);
+      outline: none;
+      transition: border-color 0.18s;
+      width: 100%;
+    }
+
+    .filter-input:focus, .filter-select:focus {
+      border-color: var(--lg-active-red);
+      background: var(--lg-white);
+    }
+
+    /* Sup Focus Banner */
+    .sup-focus-banner {
+      background: linear-gradient(135deg, var(--lg-warm-gray-01) 0%, #3a3937 100%);
+      color: var(--lg-white);
+      padding: 16px 22px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+      justify-content: space-between;
+      align-items: center;
+      border-left: 5px solid var(--lg-active-red);
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .sup-focus-banner h2 {
+      font-family: "LG EI Headline", sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sup-focus-banner p {
+      font-size: 12px;
+      color: var(--lg-warm-gray-04);
+      margin-top: 3px;
+    }
+
+    .sup-action-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    /* Main Table */
+    .table-container {
+      background: var(--lg-white);
+      border: 1px solid var(--lg-warm-gray-05);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+    }
+
+    .action-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      text-align: left;
+    }
+
+    .action-table thead th {
+      background: var(--lg-warm-gray-06);
+      color: var(--lg-warm-gray-02);
+      font-size: 11px;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      padding: 12px 14px;
+      border-bottom: 2px solid var(--lg-warm-gray-05);
+      white-space: nowrap;
+    }
+
+    .action-table tbody tr {
+      border-bottom: 1px solid var(--lg-warm-gray-05);
+      transition: background-color 0.15s;
+    }
+
+    .action-table tbody tr:hover {
+      background-color: var(--lg-warm-gray-07);
+    }
+
+    .action-table td {
+      padding: 12px 14px;
+      vertical-align: top;
+      color: var(--lg-warm-gray-01);
+      line-height: 1.45;
+    }
+
+    .row-critical {
+      background-color: rgba(253, 49, 46, 0.03);
+      border-left: 3px solid var(--lg-active-red);
+    }
+
+    .row-suspicious {
+      background-color: rgba(217, 119, 6, 0.03);
+      border-left: 3px solid #d97706;
+    }
+
+    /* Badges & Elements */
+    .dealer-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 3px;
+      margin-right: 5px;
+      text-transform: uppercase;
+      background: var(--lg-warm-gray-05);
+      color: var(--lg-warm-gray-02);
+    }
+
+    .dealer-dmx { background: #e0f2fe; color: #0369a1; }
+    .dealer-cp { background: #fef3c7; color: #b45309; }
+    .dealer-mm { background: #fce7f3; color: #be185d; }
+    .dealer-vhc { background: #ede9fe; color: #6d28d9; }
+
+    .brand-pill {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 3px;
+      display: inline-block;
+    }
+
+    .brand-lg {
+      background: var(--lg-red);
+      color: var(--lg-white);
+    }
+
+    .brand-competitor {
+      background: var(--lg-warm-gray-05);
+      color: var(--lg-warm-gray-02);
+    }
+
+    .badge-pc {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+
+    .badge-pc-active {
+      background: rgba(30, 64, 175, 0.08);
+      color: #1e40af;
+      border: 1px solid rgba(30, 64, 175, 0.2);
+    }
+
+    .badge-pc-zero {
+      background: var(--lg-warm-gray-06);
+      color: var(--lg-warm-gray-03);
+      border: 1px solid var(--lg-warm-gray-05);
+    }
+
+    .trend-numbers {
+      font-family: "LG EI Text", monospace;
+      font-size: 12px;
+      color: var(--lg-warm-gray-02);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+
+    .trend-history {
+      color: var(--lg-warm-gray-03);
+    }
+
+    .trend-current {
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--lg-warm-gray-01);
+      background: var(--lg-warm-gray-06);
+      padding: 1px 6px;
+      border-radius: 3px;
+    }
+
+    .delta-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+
+    .delta-drop { background: #fee2e2; color: #b91c1c; }
+    .delta-gain { background: #dcfce7; color: #15803d; }
+    .delta-neutral { background: var(--lg-warm-gray-05); color: var(--lg-warm-gray-03); }
+
+    .flag-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 3px;
+      margin-top: 3px;
+    }
+
+    .flag-zero { background: #fee2e2; color: #b91c1c; }
+    .flag-diff8 { background: #ffedd5; color: #c2410c; }
+    .flag-diff2 { background: #fef9c3; color: #a16207; }
+
+    .tag-validity {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-bottom: 4px;
+    }
+
+    .tag-plausible { background: #ecfdf5; color: #047857; }
+    .tag-suspicious { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+    .tag-pc-error { background: #fef2f2; color: #b91c1c; }
+    .tag-pending { background: var(--lg-warm-gray-06); color: var(--lg-warm-gray-03); }
+
+    .tag-risk {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 3px;
+    }
+
+    .risk-p0 { background: var(--lg-active-red); color: var(--lg-white); }
+    .risk-p1-comm { background: #ea580c; color: var(--lg-white); }
+    .risk-p1-susp { background: #f59e0b; color: var(--lg-white); }
+    .risk-p2-op { background: #3b82f6; color: var(--lg-white); }
+    .risk-p3-norm { background: var(--lg-warm-gray-05); color: var(--lg-warm-gray-02); }
+
+    .action-box {
+      background: var(--lg-warm-gray-07);
+      border-left: 3px solid var(--lg-warm-gray-04);
+      padding: 8px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+    }
+
+    .action-box.action-kam { border-left-color: var(--lg-active-red); background: rgba(253, 49, 46, 0.05); }
+    .action-box.action-audit { border-left-color: #d97706; background: rgba(217, 119, 6, 0.05); }
+    .action-box.action-coach { border-left-color: #2563eb; background: rgba(37, 99, 235, 0.05); }
+    .action-box.action-push { border-left-color: #ea580c; background: rgba(234, 88, 12, 0.05); }
+    .action-box.action-accept { border-left-color: #059669; background: rgba(5, 150, 105, 0.05); }
+
+    .action-title {
+      font-weight: 700;
+      margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .action-detail {
+      color: var(--lg-warm-gray-02);
+      line-height: 1.35;
+    }
+
+    .decision-buttons {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .btn-xs {
+      padding: 3px 8px;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 3px;
+      cursor: pointer;
+      border: 1px solid var(--lg-warm-gray-04);
+      background: var(--lg-white);
+      color: var(--lg-warm-gray-02);
+      transition: all 0.15s;
+      font-family: "LG EI Text", sans-serif;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .btn-xs:hover {
+      background: var(--lg-warm-gray-06);
+      color: var(--lg-warm-gray-01);
+    }
+
+    .btn-xs.btn-approved {
+      background: #ecfdf5;
+      color: #047857;
+      border-color: #a7f3d0;
+    }
+
+    .btn-xs.btn-rejected {
+      background: #fff1f2;
+      color: #be123c;
+      border-color: #fecdd3;
+    }
+
+    /* Modal for Google Sheet Sync */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      backdrop-filter: blur(2px);
+    }
+
+    .modal-box {
+      background: var(--lg-white);
+      border-radius: 8px;
+      max-width: 560px;
+      width: 90%;
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      border-top: 4px solid var(--lg-active-red);
+    }
+
+    .modal-title {
+      font-family: "LG EI Headline", sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--lg-warm-gray-01);
+    }
+
+    .modal-body {
+      font-size: 13px;
+      color: var(--lg-warm-gray-02);
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .modal-code-box {
+      background: var(--lg-warm-gray-06);
+      border: 1px solid var(--lg-warm-gray-05);
+      border-radius: 4px;
+      padding: 10px 12px;
+      font-family: monospace;
+      font-size: 12px;
+      margin: 10px 0;
+      color: var(--lg-warm-gray-01);
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    /* Footer */
+    .brand-footer {
+      background: var(--lg-warm-gray-01);
+      color: var(--lg-warm-gray-04);
+      padding: 20px 32px;
+      border-top: 1px solid var(--lg-warm-gray-02);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      margin-top: 30px;
+    }
+
+    .footer-slogan img {
+      height: 20px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    /* Toast Notification */
+    .toast-notification {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      background: var(--lg-warm-gray-01);
+      color: var(--lg-white);
+      padding: 14px 20px;
+      border-radius: 6px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+      border-left: 4px solid var(--lg-active-red);
+      font-size: 13px;
+      display: none;
+      z-index: 1000;
+      animation: fadeIn 0.25s;
+    }
+
+    /* Extra Note Badge Callout (Desktop Table) */
+    .extra-note-badge-box {
+      margin-top: 8px;
+      background: #fefce8;
+      border: 1px solid #fef08a;
+      border-left: 3px solid #ca8a04;
+      border-radius: 4px;
+      padding: 6px 8px;
+      font-size: 11px;
+    }
+
+    .extra-note-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #854d0e;
+      font-size: 10px;
+      letter-spacing: 0.03em;
+      margin-bottom: 2px;
+    }
+
+    .extra-note-text {
+      font-weight: 600;
+      color: #713f12;
+      line-height: 1.35;
+      display: block;
+    }
+
+    /* -------------------------------------------------------------
+       Mobile & Phone Viewport Optimizations (<= 768px)
+       ------------------------------------------------------------- */
+    .mobile-view-toggle {
+      display: none;
+    }
+
+    .mobile-cards-list {
+      display: none;
+    }
+
+    /* Mobile Card Styles */
+    .mobile-card {
+      background: var(--lg-white);
+      border: 1px solid var(--lg-warm-gray-05);
+      border-left: 4px solid var(--lg-warm-gray-04);
+      border-radius: 8px;
+      padding: 14px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: all 0.15s ease;
+    }
+
+    .mobile-card.mcard-p0 {
+      border-left-color: var(--lg-active-red);
+      background: linear-gradient(180deg, rgba(253, 49, 46, 0.02) 0%, #ffffff 100%);
+    }
+
+    .mobile-card.mcard-suspicious {
+      border-left-color: #d97706;
+      background: linear-gradient(180deg, rgba(217, 119, 6, 0.02) 0%, #ffffff 100%);
+    }
+
+    .mobile-card.mcard-pc-error {
+      border-left-color: #2563eb;
+      background: linear-gradient(180deg, rgba(37, 99, 235, 0.02) 0%, #ffffff 100%);
+    }
+
+    .mobile-card.mcard-plausible {
+      border-left-color: #059669;
+    }
+
+    .mcard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .mcard-store-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--lg-warm-gray-01);
+      line-height: 1.35;
+    }
+
+    .mcard-store-sub {
+      font-size: 11px;
+      color: var(--lg-warm-gray-03);
+      margin-top: 3px;
+    }
+
+    .mcard-metrics-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--lg-warm-gray-07);
+      padding: 8px 10px;
+      border-radius: 6px;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .mcard-cat-brand {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .mcard-cat {
+      font-family: "LG EI Headline", sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--lg-active-red);
+    }
+
+    .mcard-sup-row {
+      font-size: 11px;
+      color: var(--lg-warm-gray-02);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .mcard-feedback-box {
+      background: var(--lg-warm-gray-06);
+      border-radius: 6px;
+      padding: 8px 10px;
+      border: 1px solid var(--lg-warm-gray-05);
+    }
+
+    .mcard-feedback-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--lg-warm-gray-03);
+      margin-bottom: 3px;
+      letter-spacing: 0.03em;
+    }
+
+    .mcard-feedback-content {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--lg-warm-gray-01);
+      line-height: 1.4;
+    }
+
+    .mcard-extra-note-box {
+      background: #fefce8;
+      border: 1px solid #fef08a;
+      border-left: 3px solid #ca8a04;
+      border-radius: 6px;
+      padding: 8px 10px;
+    }
+
+    .mcard-extra-note-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #854d0e;
+      margin-bottom: 3px;
+      letter-spacing: 0.03em;
+    }
+
+    .mcard-extra-note-content {
+      font-size: 12px;
+      font-weight: 600;
+      color: #713f12;
+      line-height: 1.4;
+    }
+
+    .mcard-eval-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .mcard-eval-desc {
+      font-size: 11px;
+      color: var(--lg-warm-gray-02);
+      line-height: 1.35;
+    }
+
+    .mcard-action-box {
+      border-radius: 6px;
+      padding: 8px 10px;
+    }
+
+    .mcard-decision-bar {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      padding-top: 4px;
+      border-top: 1px dashed var(--lg-warm-gray-05);
+      flex-wrap: wrap;
+    }
+
+    .btn-touch {
+      flex: 1;
+      min-height: 38px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 6px;
+      border: 1px solid var(--lg-warm-gray-04);
+      background: var(--lg-white);
+      color: var(--lg-warm-gray-02);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.15s;
+      font-family: "LG EI Text", sans-serif;
+      touch-action: manipulation;
+    }
+
+    .btn-touch:active {
+      transform: scale(0.98);
+    }
+
+    .btn-touch.btn-approved {
+      background: #ecfdf5;
+      color: #047857;
+      border-color: #a7f3d0;
+      font-weight: 700;
+    }
+
+    .btn-touch.btn-rejected {
+      background: #fff1f2;
+      color: #be123c;
+      border-color: #fecdd3;
+      font-weight: 700;
+    }
+
+    @media (max-width: 768px) {
+      .brand-navbar {
+        padding: 10px 12px;
+        gap: 10px;
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .brand-logo-area {
+        justify-content: space-between;
+        width: 100%;
+        gap: 8px;
+      }
+
+      .brand-logo-area img.logo-img {
+        height: 24px;
+      }
+
+      .brand-divider {
+        height: 20px;
+        margin: 0 2px;
+      }
+
+      .brand-title-group h1 {
+        font-size: 12px;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+
+      .brand-tag {
+        font-size: 9px;
+        padding: 1px 5px;
+      }
+
+      .brand-subtitle {
+        display: none;
+      }
+
+      .cycle-switcher {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .cycle-btn {
+        flex: 1;
+        justify-content: center;
+        padding: 7px 6px;
+        font-size: 11px;
+      }
+
+      .top-actions {
+        width: 100%;
+        display: flex;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        gap: 6px;
+        padding-bottom: 2px;
+      }
+
+      .top-actions::-webkit-scrollbar {
+        display: none;
+      }
+
+      .top-actions .btn,
+      .top-actions .live-sync-indicator {
+        flex-shrink: 0;
+        padding: 6px 10px;
+        font-size: 11px;
+      }
+
+      .nav-slogan {
+        display: none;
+      }
+
+      .container {
+        padding: 12px 10px;
+      }
+
+      .region-header-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      .region-tabs {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        padding: 3px;
+        width: 100%;
+      }
+
+      .region-tabs::-webkit-scrollbar {
+        display: none;
+      }
+
+      .region-tab-btn {
+        flex-shrink: 0;
+        white-space: nowrap;
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+
+      #cycleMetaInfo {
+        font-size: 11px;
+        line-height: 1.4;
+      }
+
+      .kpi-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      .kpi-card {
+        padding: 12px 12px;
+      }
+
+      .kpi-card.kpi-progress {
+        grid-column: span 2;
+      }
+
+      .kpi-label {
+        font-size: 10px;
+        margin-bottom: 4px;
+      }
+
+      .kpi-value {
+        font-size: 20px;
+        margin-bottom: 2px;
+      }
+
+      .kpi-subtext {
+        font-size: 10px;
+        line-height: 1.3;
+      }
+
+      .progress-section {
+        padding: 12px 12px;
+        margin-bottom: 12px;
+      }
+
+      .progress-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+        font-size: 12px;
+      }
+
+      #progressBarLabel {
+        font-size: 11px;
+      }
+
+      .quick-pills-row {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        gap: 6px;
+        padding-bottom: 6px;
+        margin-bottom: 12px;
+      }
+
+      .quick-pills-row::-webkit-scrollbar {
+        display: none;
+      }
+
+      .pill-btn {
+        flex-shrink: 0;
+        white-space: nowrap;
+        padding: 6px 11px;
+        font-size: 11px;
+      }
+
+      .filter-panel {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        padding: 12px 12px;
+        margin-bottom: 14px;
+      }
+
+      .filter-panel .filter-group:nth-child(1),
+      .filter-panel .filter-group:nth-child(2) {
+        grid-column: span 2;
+      }
+
+      .filter-label {
+        font-size: 10px;
+      }
+
+      .filter-input, .filter-select {
+        height: 38px;
+        font-size: 12px;
+      }
+
+      .sup-focus-banner {
+        padding: 12px 14px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+
+      .sup-action-buttons {
+        width: 100%;
+        flex-direction: column;
+      }
+
+      .sup-action-buttons .btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .mobile-view-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: var(--lg-warm-gray-06);
+        padding: 6px 10px;
+        border-radius: 6px;
+        margin-bottom: 10px;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--lg-warm-gray-02);
+      }
+
+      .mobile-toggle-btn {
+        padding: 5px 10px;
+        font-size: 11px;
+        font-weight: 600;
+        border-radius: 4px;
+        border: none;
+        background: transparent;
+        color: var(--lg-warm-gray-02);
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        transition: all 0.15s;
+        font-family: "LG EI Text", sans-serif;
+      }
+
+      .mobile-toggle-btn.active {
+        background: var(--lg-white);
+        color: var(--lg-active-red);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      }
+
+      .table-container.mobile-card-mode {
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        overflow: visible;
+      }
+
+      .table-container.mobile-card-mode .action-table {
+        display: none;
+      }
+
+      .table-container.mobile-card-mode .mobile-cards-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .table-container.mobile-table-mode {
+        background: var(--lg-white);
+        border: 1px solid var(--lg-warm-gray-05);
+        border-radius: 8px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+      }
+
+      .table-container.mobile-table-mode .action-table {
+        display: table;
+        min-width: 960px;
+      }
+
+      .table-container.mobile-table-mode .mobile-cards-list {
+        display: none;
+      }
+
+      .brand-footer {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+        padding: 18px 12px;
+      }
+
+      .brand-footer .footer-left {
+        font-size: 11px;
+        line-height: 1.4;
+      }
+
+      .footer-slogan img {
+        height: 18px;
+      }
+
+      .modal-box {
+        width: 94%;
+        padding: 18px 16px;
+      }
+
+      .toast-notification {
+        right: 16px;
+        left: 16px;
+        bottom: 16px;
+        font-size: 12px;
+        padding: 12px 14px;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LG Brand Header Navigation -->
+  <header class="brand-navbar">
+    <div class="brand-logo-area">
+      <img src="assets/logo/LGE_Logo_HeritageRed_White_RGB.png" alt="LG Logo" class="logo-img">
+      <div class="brand-divider"></div>
+      <div class="brand-title-group">
+        <h1>
+          SOF AUDIT & RISK GOVERNANCE COCKPIT
+          <span class="brand-tag" id="cycleBadge">GTM EXECUTIVE · W41 (LIVE)</span>
+        </h1>
+        <div class="brand-subtitle">
+          Giám Sát Tiến Độ · Thẩm Định Tính Chân Thực Phản Hồi · Quản Trị Rủi Ro Thương Mại & SOF
+        </div>
+      </div>
+    </div>
+
+    <!-- Cycle Switcher (W41 Live vs W40 Baseline) -->
+    <div class="cycle-switcher">
+      <button class="cycle-btn active" id="btnCycleW41" onclick="switchCycle('W41')">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        W37–W41 (Google Sheet Live)
+      </button>
+      <button class="cycle-btn" id="btnCycleW40" onclick="switchCycle('W40')">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        W36–W40 (Baseline Toàn Quốc)
+      </button>
+    </div>
+
+    <!-- Executive Action Bar with Real-Time Live Sync -->
+    <div class="top-actions">
+      <!-- Live Sync Real-time Pill -->
+      <div class="live-sync-indicator" id="liveSyncBadge" onclick="fetchGoogleSheetLive(false)" title="Click để đồng bộ ngay lập tức">
+        <span class="live-pulse" id="livePulseDot"></span>
+        <span id="liveSyncText">Live Sync: Bật</span>
+        <svg class="icon icon-sm" id="liveSyncIcon" viewBox="0 0 24 24"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+      </div>
+
+      <a href="https://docs.google.com/spreadsheets/d/1mpArbb5ShJqtWfgC8yB7pVv70tcTXK7XYKnxGWSGaws/edit?usp=sharing" target="_blank" class="btn btn-secondary">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Mở Google Sheet
+      </a>
+      <button class="btn btn-secondary" onclick="openSyncModal()">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+        Cấu Hình Sync
+      </button>
+      <button class="btn btn-secondary" id="btnUrgentPush" onclick="copyRegionalUrgentSummary()">
+        <svg class="icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <span id="btnUrgentPushText">Đôn đốc Miền Trung (11 Tồn)</span>
+      </button>
+      <button class="btn btn-primary" onclick="exportAuditReportCSV()">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Xuất Báo Cáo Thẩm Định (CSV)
+      </button>
+      <img src="assets/slogan/LGE_Electronics_Slogan_Horizontal_Mono_White_RGB.png" alt="Life's Good" class="nav-slogan">
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- Regional Breakdown Selector -->
+    <section class="region-header-row">
+      <div class="region-tabs" id="regionTabs">
+        <button class="region-tab-btn active" onclick="setRegionFilter('ALL')">
+          Toàn Bộ <span class="badge-count" id="badgeAll">11 ca</span>
+        </button>
+        <button class="region-tab-btn" onclick="setRegionFilter('Middle')">
+          Miền Trung <span class="badge-count" id="badgeMiddle">11 ca</span>
+        </button>
+        <button class="region-tab-btn" onclick="setRegionFilter('North')">
+          Miền Bắc <span class="badge-count" id="badgeNorth">0 ca</span>
+        </button>
+        <button class="region-tab-btn" onclick="setRegionFilter('South')">
+          Miền Nam <span class="badge-count" id="badgeSouth">0 ca</span>
+        </button>
+      </div>
+
+      <div style="font-size: 12px; color: var(--lg-warm-gray-03);" id="cycleMetaInfo">
+        Chu kỳ dữ liệu: <strong>W37 – W41 (2026)</strong> · Cơ sở dữ liệu: <strong>Google Sheet Live (Tự động đồng bộ mỗi 30s)</strong>
+      </div>
+    </section>
+
+    <!-- 4 Governance Pillar KPI Cards -->
+    <section class="kpi-grid">
+      <div class="kpi-card kpi-progress" onclick="setQuickPill('ALL')">
+        <div class="kpi-label">
+          <span>1. Tiến Độ Đã Feedback</span>
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="kpi-value" id="kpiDoneCount">0 / 11</div>
+        <div class="kpi-subtext" id="kpiDonePercent">Tỷ lệ: 0% khu vực đã lọc</div>
+      </div>
+
+      <div class="kpi-card kpi-pending" onclick="setQuickPill('PENDING')">
+        <div class="kpi-label">
+          <span>Chưa Phản Hồi (Tồn Đọng)</span>
+          <span class="badge-count badge-alert" id="kpiPendingBadge">11</span>
+        </div>
+        <div class="kpi-value" style="color: #c2410c;" id="kpiPendingCount">11 ca</div>
+        <div class="kpi-subtext">Cần đôn đốc gấp trước thứ 4</div>
+      </div>
+
+      <div class="kpi-card kpi-critical" onclick="setQuickPill('COMMERCIAL_RISK')">
+        <div class="kpi-label">
+          <span>2. Rủi Ro Mất Quầy & SOF LG</span>
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div class="kpi-value" style="color: var(--lg-active-red);" id="kpiRiskP0">0 ca</div>
+        <div class="kpi-subtext" id="kpiRiskSubtext">Chờ kết quả feedback từ SUP</div>
+      </div>
+
+      <div class="kpi-card kpi-suspicious" onclick="setQuickPill('SUSPICIOUS')">
+        <div class="kpi-label">
+          <span>3. Nghi Vấn Qua Loa / Đối Phó</span>
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <div class="kpi-value" style="color: #d97706;" id="kpiSuspicious">0 ca</div>
+        <div class="kpi-subtext" id="kpiSuspiciousSubtext">Về 0 hoặc lệch >8 nhưng giải trình chung chung</div>
+      </div>
+
+      <div class="kpi-card kpi-pc-error" onclick="setQuickPill('PC_ERROR')">
+        <div class="kpi-label">
+          <span>4. Lỗi PC Báo Sai Tuần Cũ</span>
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/></svg>
+        </div>
+        <div class="kpi-value" style="color: #2563eb;" id="kpiPCError">0 ca</div>
+        <div class="kpi-subtext">Thừa nhận lỗi nhập liệu tuần trước</div>
+      </div>
+    </section>
+
+    <!-- Overall Progress Bar -->
+    <section class="progress-section">
+      <div class="progress-header">
+        <span id="progressBarTitle">Tiến độ phản hồi & Thẩm định chất lượng số liệu W41</span>
+        <span id="progressBarLabel">0 Đã làm / 11 Còn tồn</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill-done" id="barDone" style="width: 0%;"></div>
+        <div class="progress-bar-fill-suspicious" id="barSuspicious" style="width: 0%;"></div>
+      </div>
+    </section>
+
+    <!-- Quick Filter Action Pills -->
+    <section class="quick-pills-row">
+      <button class="pill-btn active" onclick="setQuickPill('ALL')">
+        Tất cả (<span id="pillAll">11</span>)
+      </button>
+      <button class="pill-btn pill-warning" onclick="setQuickPill('PENDING')">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Chưa feedback (<span id="pillPending">11</span>)
+      </button>
+      <button class="pill-btn pill-danger" onclick="setQuickPill('COMMERCIAL_RISK')">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Rủi ro mất quầy / SOF LG (<span id="pillRiskP0">0</span>)
+      </button>
+      <button class="pill-btn pill-warning" onclick="setQuickPill('SUSPICIOUS')">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        Nghi vấn đối phó / Cần chụp ảnh (<span id="pillSuspicious">0</span>)
+      </button>
+      <button class="pill-btn" onclick="setQuickPill('PC_ERROR')">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/></svg>
+        Thừa nhận PC báo sai (<span id="pillPCError">0</span>)
+      </button>
+      <button class="pill-btn" onclick="setQuickPill('PLAUSIBLE')">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        Hợp lý đạt chuẩn (<span id="pillPlausible">0</span>)
+      </button>
+      <button class="pill-btn" onclick="setQuickPill('HAS_EXTRA_NOTE')" style="border-color: #fde047; color: #854d0e; background: #fefce8;">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        Có Extra note (<span id="pillExtraNote">0</span>)
+      </button>
+      <button class="pill-btn" onclick="setQuickPill('LG_ONLY')">
+        Thương hiệu LG (<span id="pillLG">5</span>)
+      </button>
+    </section>
+
+    <!-- Supervisor Dedicated Focus Banner -->
+    <section class="sup-focus-banner" id="supFocusBanner">
+      <div>
+        <h2>
+          <span>PC Supervisor: <span id="currentSupName">Trần Thanh Tuấn</span></span>
+          <span class="badge-count" style="background: rgba(255,255,255,0.15); color: #fff;" id="supRegionBadge">Miền Trung</span>
+        </h2>
+        <p>
+          Tổng phụ trách: <strong id="supTotalCases">5 ca</strong> · 
+          Đã feedback: <strong id="supDoneCases" style="color: #6ee7b7;">0 ca (0%)</strong> · 
+          Còn tồn: <strong id="supPendingCases" style="color: #fca5a5;">5 ca</strong> · 
+          Nghi vấn: <strong id="supSuspCases" style="color: #fde68a;">0 ca</strong>
+        </p>
+      </div>
+      <div class="sup-action-buttons">
+        <button class="btn btn-primary" onclick="copySupDirectPush()">
+          <svg class="icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy nội dung đôn đốc gửi SUP này
+        </button>
+        <button class="btn btn-secondary" onclick="clearSupFilter()">
+          Xem toàn bộ SUP
+        </button>
+      </div>
+    </section>
+
+    <!-- Filters Panel with PC Active Added -->
+    <section class="filter-panel">
+      <div class="filter-group">
+        <label class="filter-label">Tìm kiếm nhanh (Shop / Tỉnh / Brand / Feedback)</label>
+        <input type="text" id="searchInput" class="filter-input" placeholder="Gõ tên cửa hàng, mã shop, tỉnh, lý do..." oninput="applyFilters()">
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label">Lọc theo PC Supervisor</label>
+        <select id="supSelect" class="filter-select" onchange="onSupSelectChange()">
+          <option value="ALL">-- Tất cả Supervisor --</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label">Nhân sự PC tại điểm bán</label>
+        <select id="pcActiveSelect" class="filter-select" onchange="applyFilters()">
+          <option value="ALL">-- Tất cả PC --</option>
+          <option value="HAS_PC">Có PC (>= 1 PC)</option>
+          <option value="NO_PC">Không có PC (0 PC)</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label">Cấp độ rủi ro (Risk Level)</label>
+        <select id="riskSelect" class="filter-select" onchange="applyFilters()">
+          <option value="ALL">-- Tất cả mức độ rủi ro --</option>
+          <option value="P0_CRITICAL">P0: Rủi ro Mất SOF LG</option>
+          <option value="P1_COMMERCIAL">P1: Cắt giảm quầy kệ</option>
+          <option value="P1_SUSPICIOUS">P1: Nghi vấn gian lận/Qua loa</option>
+          <option value="P2_OPERATIONAL">P2: Lỗi nhân sự PC báo sai</option>
+          <option value="P3_NORMAL">P3: Biến động bình thường</option>
+          <option value="HIGH">Rủi ro tồn đọng chưa feedback</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label">Thẩm định tính hợp lý</label>
+        <select id="sanitySelect" class="filter-select" onchange="applyFilters()">
+          <option value="ALL">-- Tất cả kết quả --</option>
+          <option value="PLAUSIBLE">Hợp lý</option>
+          <option value="SUSPICIOUS">Nghi vấn đối phó</option>
+          <option value="PC_ERROR">Thừa nhận PC báo sai</option>
+          <option value="PENDING">Chưa phản hồi</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label">Ngành hàng (Category)</label>
+        <select id="catSelect" class="filter-select" onchange="applyFilters()">
+          <option value="ALL">-- Tất cả ngành --</option>
+          <option value="WM">WM - Máy giặt</option>
+          <option value="REF">REF - Tủ lạnh</option>
+          <option value="RAC">RAC - Điều hòa</option>
+          <option value="TV">TV - Tivi</option>
+          <option value="AP">AP - Lọc không khí</option>
+          <option value="MWO">MWO - Lò vi sóng</option>
+          <option value="DW">DW - Máy rửa bát</option>
+          <option value="VC">VC - Máy hút bụi</option>
+          <option value="DEHUM">DEHUM - Máy hút ẩm</option>
+          <option value="AV">AV - Âm thanh</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- Mobile View Switcher (Only visible on Phone / Tablet <= 768px) -->
+    <div class="mobile-view-toggle" id="mobileViewToggle">
+      <span>Chế độ xem trên điện thoại:</span>
+      <div style="display: flex; gap: 4px;">
+        <button class="mobile-toggle-btn active" id="btnViewCard" onclick="setMobileViewMode('CARD')">
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Dạng Thẻ
+        </button>
+        <button class="mobile-toggle-btn" id="btnViewTable" onclick="setMobileViewMode('TABLE')">
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          Bảng Cuộn
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Audit Action Table & Mobile Cards -->
+    <section class="table-container mobile-card-mode" id="tableContainer">
+      <!-- Mobile Cards List -->
+      <div class="mobile-cards-list" id="mobileCardsList">
+        <!-- Dynamically populated via JS -->
+      </div>
+
+      <!-- Desktop & Scrollable Table -->
+      <table class="action-table" id="actionTable">
+        <thead>
+          <tr>
+            <th style="width: 270px;">Cửa Hàng & Kênh Bán Lẻ</th>
+            <th style="width: 100px;">Ngành · Brand</th>
+            <th style="width: 170px;" id="colHeaderTrend">Biến Động 5 Tuần (W37 → W41)</th>
+            <th style="width: 220px;">Feedback Của PC SUP</th>
+            <th style="width: 200px;">Thẩm Định Tính Hợp Lý</th>
+            <th style="width: 160px;">Cấp Độ Rủi Ro</th>
+            <th style="width: 260px;">Action Khuyến Nghị Cho GTM</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <!-- Dynamically populated via JS -->
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+
+  <!-- Google Sheet Sync Modal -->
+  <div class="modal-overlay" id="syncModal">
+    <div class="modal-box">
+      <div class="modal-title">
+        <svg class="icon icon-lg" viewBox="0 0 24 24"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+        Đồng Bộ Dữ Liệu Thời Gian Thực (Real-Time Live Sync)
+      </div>
+      <div class="modal-body">
+        <p>Hệ thống tự động liên kết với Google Sheet điều hành của bạn:</p>
+        <p style="margin-top: 6px;"><a href="https://docs.google.com/spreadsheets/d/1mpArbb5ShJqtWfgC8yB7pVv70tcTXK7XYKnxGWSGaws/edit?usp=sharing" target="_blank" style="color: var(--lg-active-red); font-weight: 600;">https://docs.google.com/spreadsheets/d/1mpArbb5ShJqtWfgC8yB7pVv70tcTXK7XYKnxGWSGaws/edit</a></p>
+        
+        <p style="margin-top: 14px;"><strong>Cơ chế tự động Real-time:</strong></p>
+        <ul style="margin-left: 20px; font-size: 12px; color: var(--lg-warm-gray-02); line-height: 1.6; margin-top: 6px;">
+          <li><strong>Tự động kiểm tra:</strong> Cockpit tự động quét Google Sheet mỗi 30 giây trong nền.</li>
+          <li><strong>Chuyển tab thông minh:</strong> Khi bạn vừa sửa trên Google Sheet và bấm quay lại tab Cockpit, hệ thống tự động cập nhật ngay lập tức.</li>
+          <li><strong>Bấm thủ công:</strong> Bấm vào nút "Live Sync" ở góc trên bên phải để ép làm mới tức thì bất kỳ lúc nào.</li>
+        </ul>
+
+        <div class="modal-code-box" style="margin-top: 14px;">
+          Lệnh terminal (nếu cần backup file offline):<br>
+          python3 scripts/sync_sheets.py
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeSyncModal()">Đóng</button>
+        <button class="btn btn-primary" onclick="closeSyncModal(); fetchGoogleSheetLive(false);">
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+          Đồng Bộ Ngay Bây Giờ
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Official Footer with Life's Good Slogan Sign-off -->
+  <footer class="brand-footer">
+    <div class="footer-left">
+      <strong>LG Electronics Vietnam</strong> · GTM Channel Development Strategist Department<br>
+      Hệ thống kiểm soát rủi ro trưng bày (Share of Floor Audit) · Nội bộ sử dụng (Internal Use Only)
+    </div>
+    <div class="footer-slogan">
+      <img src="assets/slogan/LGE_Electronics_Slogan_Horizontal_Mono_ActiveRed_RGB.png" alt="Life's Good">
+    </div>
+  </footer>
+
+  <!-- Notification Toast -->
+  <div class="toast-notification" id="toast">Thông báo</div>
+
+  <!-- Embedded Datasets -->
+  <script src="assets/w40_audit_cockpit.js"></script>
+  <script src="assets/w41_audit_cockpit.js"></script>
+
+  <script>
+    // Configuration & State
+    const GOOGLE_SHEET_ID = "1mpArbb5ShJqtWfgC8yB7pVv70tcTXK7XYKnxGWSGaws";
+    const SHEET_GID = "1357809752";
+    const CSV_ENDPOINT = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/export?format=csv&gid=${SHEET_GID}`;
+    const GVIZ_ENDPOINT = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/gviz/tq?tqx=out:json&sheet=Check%20theo%20CAT,%20theo%20Brand`;
+    
+    let currentCycleKey = 'W41'; // Default: W41 (Live Google Sheet)
+    let datasetW41 = window.SOF_AUDIT_DATA_W41 || { records: [], weeks: ['W37', 'W38', 'W39', 'W40', 'W41'] };
+    let datasetW40 = window.SOF_AUDIT_DATA || { records: [], weeks: ['W36', 'W37', 'W38', 'W39', 'W40'] };
+    
+    let activeDataset = datasetW41;
+    let allRecords = activeDataset.records || [];
+    let currentRegion = 'ALL';
+    let currentQuickPill = 'ALL';
+    let selectedSup = 'ALL';
+    let gtmDecisionStore = {};
+    let isFetchingLive = false;
+    let autoSyncTimer = null;
+
+    // Master Store Info Cache
+    const storeMasterCache = {};
+    function initStoreCache() {
+      (datasetW40.records || []).forEach(r => {
+        storeMasterCache[r.store_code] = {
+          store_name: r.store_name,
+          dealer: r.dealer,
+          channel: r.channel,
+          province: r.province,
+          district: r.district,
+          sup: r.sup,
+          active_pc: r.active_pc
+        };
+      });
+      (datasetW41.records || []).forEach(r => {
+        if (!storeMasterCache[r.store_code]) {
+          storeMasterCache[r.store_code] = {
+            store_name: r.store_name,
+            dealer: r.dealer,
+            channel: r.channel,
+            province: r.province,
+            district: r.district,
+            sup: r.sup,
+            active_pc: r.active_pc
+          };
+        }
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initStoreCache();
+      loadDecisions();
+      switchCycle('W41');
+
+      // Auto-trigger live fetch on startup
+      fetchGoogleSheetLive(true);
+
+      // Background auto-refresh timer (every 30 seconds)
+      autoSyncTimer = setInterval(() => {
+        if (currentCycleKey === 'W41') {
+          fetchGoogleSheetLive(true);
+        }
+      }, 30000);
+
+      // Auto-sync whenever user focuses back on window
+      window.addEventListener('focus', () => {
+        if (currentCycleKey === 'W41') {
+          fetchGoogleSheetLive(true);
+        }
+      });
+    });
+
+    function loadDecisions() {
+      try {
+        const savedDecisions = localStorage.getItem(`lg_gtm_decisions_${currentCycleKey}`);
+        gtmDecisionStore = savedDecisions ? JSON.parse(savedDecisions) : {};
+      } catch (e) {
+        console.error('Cannot load local decisions', e);
+        gtmDecisionStore = {};
+      }
+    }
+
+    // Client-side Sanity & Risk Evaluation
+    function evaluateFeedbackClient(record) {
+      const fbRaw = (record.feedback_raw || '').trim();
+      const fbLower = fbRaw.toLowerCase();
+      const brand = record.brand || '';
+      const wCur = record.w41 || 0;
+      const wPrev = record.w40 || 0;
+      const delta = wCur - wPrev;
+      const flags = record.flags || {};
+
+      if (!fbRaw) {
+        return {
+          status: 'CHƯA_FEEDBACK',
+          validity: 'PENDING',
+          validity_label: 'Chưa có phản hồi',
+          validity_desc: 'PC SUP chưa điền giải trình trên Google Sheet',
+          risk_level: 'HIGH',
+          risk_label: 'Rủi ro tồn đọng',
+          risk_desc: 'Cần đôn đốc SUP phản hồi gấp trước hạn chốt tuần',
+          action_code: 'PUSH_SUP',
+          action_title: 'Đôn đốc phản hồi gấp',
+          action_detail: 'Gửi tin nhắn cảnh báo yêu cầu SUP xác minh trong ngày.'
+        };
+      }
+
+      const extraNote = (record.extra_note || '').trim();
+      const extraLower = extraNote.toLowerCase();
+
+      // Rule SAN-EXTRA: If SUP/Manager provided an Extra Note, the case is no longer an unsubstantiated generic excuse.
+      // It is immediately resolved into PLAUSIBLE or DATA_MISMATCH and MUST NOT be classified as SUSPICIOUS.
+      if (extraNote) {
+        // Case 1: Count correction / Mismatch (số đúng là, không phải, sets, sai số, lệch số...)
+        if (extraLower.includes('số đúng là') || extraLower.includes('không phải') || extraLower.includes('khổng phải') || extraLower.includes('sets') || extraLower.includes('sai số') || extraLower.includes('lệch số')) {
+          return {
+            status: 'ĐÃ_FEEDBACK',
+            validity: 'DATA_MISMATCH',
+            validity_label: 'Sai lệch số thực tế',
+            validity_desc: `SUP bổ sung: "${extraNote}". Số trên hệ thống không khớp với thực tế kiểm đếm.`,
+            risk_level: 'P2_OPERATIONAL',
+            risk_label: 'Dữ liệu Sheet bị lệch số',
+            risk_desc: 'Số liệu trên Sheet khai khống so với thực tế. Cần hiệu chỉnh lại số đúng.',
+            action_code: 'CORRECT_DATA',
+            action_title: 'Bác bỏ & Hiệu chỉnh số liệu',
+            action_detail: `Yêu cầu sửa số liệu chính thức theo ghi chú thực tế: '${extraNote}'; kiểm điểm PC.`
+          };
+        }
+
+        // Case 2: Competitor shelf cut / delisting for non-LG brands (cắt, bỏ mẫu, đảo...)
+        if ((extraLower.includes('cắt') || extraLower.includes('bỏ mẫu') || extraLower.includes('đảo')) && brand !== 'LG') {
+          return {
+            status: 'ĐÃ_FEEDBACK',
+            validity: 'PLAUSIBLE',
+            validity_label: 'Đã làm rõ (Extra Note)',
+            validity_desc: `SUP bổ sung thông tin thực địa: "${extraNote}".`,
+            risk_level: 'P3_NORMAL',
+            risk_label: `Đối thủ ${brand} bị cắt giảm`,
+            risk_desc: `Thị trường thu hẹp trưng bày model đối thủ ${brand} tại cửa hàng.`,
+            action_code: 'EXPAND_LG',
+            action_title: 'Tận dụng chiếm đảo kệ',
+            action_detail: `${brand} bị cắt giảm trưng bày. Đề xuất làm việc với shop để đưa thêm sản phẩm LG vào đảo trống.`
+          };
+        }
+
+        // Case 3: Universal Extra Note (chuyển model EOL, dọn kho, event, v.v...)
+        return {
+          status: 'ĐÃ_FEEDBACK',
+          validity: 'PLAUSIBLE',
+          validity_label: 'Đã làm rõ (Extra Note)',
+          validity_desc: `SUP bổ sung: "${extraNote}". Đã làm rõ nguyên nhân biến động thực tế.`,
+          risk_level: 'P3_NORMAL',
+          risk_label: 'Biến động đã làm rõ',
+          risk_desc: 'Cửa hàng đã giải trình cụ thể biến động thực tế.',
+          action_code: 'ACCEPT',
+          action_title: 'Phê duyệt giải trình (Có Extra Note)',
+          action_detail: `Chấp thuận do SUP đã bổ sung nguyên nhân thực địa: '${extraNote}'.`
+        };
+      }
+
+      // Rule SAN-01: Drop to 0 with generic excuse
+      if (flags.zero_drop && fbLower.includes('tăng giảm đúng thực tế')) {
+        return {
+          status: 'ĐÃ_FEEDBACK',
+          validity: 'SUSPICIOUS',
+          validity_label: 'Nghi vấn đối phó',
+          validity_desc: 'Dữ liệu về 0 nhưng ghi tăng giảm đúng thực tế. Cần ảnh chụp quầy.',
+          risk_level: brand === 'LG' ? 'P0_CRITICAL' : 'P1_SUSPICIOUS',
+          risk_label: brand === 'LG' ? 'Mất SOF LG' : 'Nghi vấn đối phó',
+          risk_desc: `Nguy cơ mất trắng trưng bày ${brand} tại shop nhưng phản hồi qua loa`,
+          action_code: 'REJECT_AND_AUDIT',
+          action_title: 'Bác bỏ & Đòi ảnh thực tế',
+          action_detail: 'Từ chối duyệt. Yêu cầu SUP gửi ảnh chụp kệ thực tế trong 24h.'
+        };
+      }
+
+      // Rule SAN-02: Radical swing >= 8 with generic excuse
+      if (flags.diff_8_4w && fbLower.includes('tăng giảm đúng thực tế')) {
+        return {
+          status: 'ĐÃ_FEEDBACK',
+          validity: 'SUSPICIOUS',
+          validity_label: 'Nghi vấn đối phó',
+          validity_desc: 'Biến động lệch >8 sets nhưng giải trình chung chung, thiếu căn cứ.',
+          risk_level: 'P1_SUSPICIOUS',
+          risk_label: 'Nghi vấn đối phó',
+          risk_desc: 'Khả năng copy-paste giải trình hàng loạt không qua kiểm tra thực tế',
+          action_code: 'REJECT_AND_AUDIT',
+          action_title: 'Yêu cầu ảnh & Biên bản',
+          action_detail: 'Yêu cầu SUP giải trình chi tiết lý do biến động đột biến.'
+        };
+      }
+
+      // Rule SAN-03: PC error admission
+      if (fbLower.includes('báo sai') || fbLower.includes('nhập sai') || fbLower.includes('điều chỉnh lại')) {
+        return {
+          status: 'ĐÃ_FEEDBACK',
+          validity: 'PC_ERROR',
+          validity_label: 'Thừa nhận PC báo sai',
+          validity_desc: 'SUP thừa nhận nhân viên PC báo sai số tuần trước, tuần này sửa lại',
+          risk_level: 'P2_OPERATIONAL',
+          risk_label: 'Lỗi vận hành PC',
+          risk_desc: 'Số liệu quá khứ không đáng tin cậy. Cần kiểm điểm kỷ luật PC.',
+          action_code: 'COACH_PC',
+          action_title: 'Kiểm điểm & Đào tạo PC',
+          action_detail: 'Yêu cầu SUP đào tạo lại quy trình kiểm đếm cho PC tại điểm bán.'
+        };
+      }
+
+      // Commercial cut
+      if (fbLower.includes('cắt shop') || fbLower.includes('bỏ quầy') || fbLower.includes('dồn quầy') || fbLower.includes('hạ bục')) {
+        return {
+          status: 'ĐÃ_FEEDBACK',
+          validity: 'PLAUSIBLE',
+          validity_label: 'Hợp lý (Có căn cứ)',
+          validity_desc: 'Giải trình phản ánh việc đại lý cắt giảm hoặc thu hồi quầy kệ',
+          risk_level: brand === 'LG' ? 'P0_CRITICAL' : 'P1_COMMERCIAL',
+          risk_label: brand === 'LG' ? 'P0: Mất quầy LG' : 'P1: Cắt quầy đại lý',
+          risk_desc: `Đại lý đang thu hẹp mặt bằng trưng bày ${brand}`,
+          action_code: 'ESCALATE_KAM',
+          action_title: 'Can thiệp KAM khẩn cấp',
+          action_detail: 'Báo cáo Head of GTM & làm việc với KAM để bảo vệ hợp đồng quầy kệ.'
+        };
+      }
+
+      // LG display drop
+      if (brand === 'LG' && delta < 0 && Math.abs(delta) >= 2) {
+        return {
+          status: 'ĐÃ_FEEDBACK',
+          validity: 'PLAUSIBLE',
+          validity_label: 'Hợp lý đạt chuẩn',
+          validity_desc: `LG giảm ${Math.abs(delta)} sets. Cần theo dõi để tránh mất thị phần SOF.`,
+          risk_level: 'P0_CRITICAL',
+          risk_label: 'Rủi ro giảm trưng bày LG',
+          risk_desc: `Số lượng trưng bày của LG bị giảm ${Math.abs(delta)} máy`,
+          action_code: 'ESCALATE_KAM',
+          action_title: 'Theo dõi SOF & Kiểm tra shop',
+          action_detail: 'Kiểm tra lý do giảm model LG và đôn đốc đưa thêm hàng trưng bày.'
+        };
+      }
+
+      // Normal Plausible
+      return {
+        status: 'ĐÃ_FEEDBACK',
+        validity: 'PLAUSIBLE',
+        validity_label: 'Hợp lý đạt chuẩn',
+        validity_desc: 'Lý do phù hợp với biến động luân chuyển hàng hóa thực tế',
+        risk_level: 'P3_NORMAL',
+        risk_label: 'Biến động bình thường',
+        risk_desc: 'Thay đổi số lượng do relayout hoặc luân chuyển model bình thường',
+        action_code: 'ACCEPT',
+        action_title: 'Phê duyệt giải trình',
+        action_detail: 'Chấp thuận dữ liệu đưa vào báo cáo SOF chính thức.'
+      };
+    }
+
+    // Robust CSV parser supporting quotes and commas
+    function parseCsvToRows(text) {
+      const lines = text.split(/\r?\n/);
+      const rows = [];
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        if (!line.trim()) continue;
+        const row = [];
+        let insideQuotes = false;
+        let entry = '';
+        for (let j = 0; j < line.length; j++) {
+          const char = line[j];
+          if (char === '"') {
+            if (insideQuotes && line[j+1] === '"') {
+              entry += '"';
+              j++;
+            } else {
+              insideQuotes = !insideQuotes;
+            }
+          } else if (char === ',' && !insideQuotes) {
+            row.push(entry);
+            entry = '';
+          } else {
+            entry += char;
+          }
+        }
+        row.push(entry);
+        rows.push(row);
+      }
+      return rows;
+    }
+
+    // REAL-TIME Live Google Sheet Fetcher (CSV Primary with GVIZ Fallback)
+    async function fetchGoogleSheetLive(isBackground = false) {
+      if (isFetchingLive) return;
+      isFetchingLive = true;
+
+      const badge = document.getElementById('liveSyncBadge');
+      const dot = document.getElementById('livePulseDot');
+      const text = document.getElementById('liveSyncText');
+      const icon = document.getElementById('liveSyncIcon');
+
+      if (dot) dot.classList.add('syncing');
+      if (icon) icon.classList.add('spinning');
+      if (text) text.textContent = 'Đang đồng bộ...';
+
+      try {
+        const fetchUrl = `${CSV_ENDPOINT}&t=${Date.now()}`;
+        const response = await fetch(fetchUrl);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        
+        const rawCsv = await response.text();
+        const rows = parseCsvToRows(rawCsv);
+        if (rows.length < 2) throw new Error('Dữ liệu CSV không hợp lệ');
+
+        const liveRecords = [];
+        for (let i = 2; i < rows.length; i++) {
+          const r = rows[i];
+          if (!r || r.length < 16) continue;
+
+          function getCell(idx) {
+            return (r[idx] !== undefined && r[idx] !== null) ? String(r[idx]).trim() : '';
+          }
+
+          const d2 = getCell(12).toLowerCase();
+          const d8 = getCell(13).toLowerCase();
+          const z0 = getCell(14).toLowerCase();
+
+          const isD2 = d2.includes('x') || d2 === '1';
+          const isD8 = d8.includes('x') || d8 === '1';
+          const isZ0 = z0.includes('x') || z0 === '1';
+
+          if (isD2 || isD8 || isZ0) {
+            const shopCode = getCell(0);
+            const master = storeMasterCache[shopCode] || {};
+            
+            const shopName = getCell(1) || master.store_name || '';
+            const sup = getCell(2) || master.sup || '';
+            const pcActRaw = getCell(3);
+            const parsedPc = parseInt(pcActRaw, 10);
+            const activePc = !isNaN(parsedPc) ? parsedPc : (master.active_pc || 0);
+            const reg = getCell(4) || master.region || 'Middle';
+            const cat = getCell(5) || '';
+            const brand = getCell(6) || '';
+
+            const w37 = Math.round(Number(getCell(7)) || 0);
+            const w38 = Math.round(Number(getCell(8)) || 0);
+            const w39 = Math.round(Number(getCell(9)) || 0);
+            const w40 = Math.round(Number(getCell(10)) || 0);
+            const w41 = Math.round(Number(getCell(11)) || 0);
+            const fb = getCell(15);
+            const extraNote = getCell(17);
+
+            const rec = {
+              id: `${shopCode}_${cat}_${brand}`,
+              store_code: shopCode,
+              store_name: shopName,
+              dealer: master.dealer || 'DMX',
+              channel: master.channel || 'MC',
+              region: reg,
+              province: master.province || '',
+              district: master.district || '',
+              sup: sup,
+              active_pc: activePc,
+              category: cat,
+              brand: brand,
+              w37: w37,
+              w38: w38,
+              w39: w39,
+              w40: w40,
+              w41: w41,
+              delta_wow: w41 - w40,
+              flags: {
+                diff_8_4w: isD8,
+                diff_2_prev: isD2,
+                zero_drop: isZ0,
+                lg_drop_50: (brand === 'LG' && w40 > 0 && w41 <= w40 * 0.5)
+              },
+              feedback_raw: fb,
+              extra_note: extraNote
+            };
+
+            rec.eval = evaluateFeedbackClient(rec);
+            liveRecords.push(rec);
+          }
+        }
+
+        if (liveRecords.length > 0) {
+          datasetW41.records = liveRecords;
+          datasetW41.total_records = liveRecords.length;
+
+          if (currentCycleKey === 'W41') {
+            allRecords = datasetW41.records;
+            updateRegionalBadges();
+            populateSupDropdown();
+            applyFilters();
+          }
+
+          const doneCount = liveRecords.filter(r => r.eval.status === 'ĐÃ_FEEDBACK').length;
+          const nowStr = new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+          if (text) text.textContent = `Live: ${nowStr}`;
+          
+          if (!isBackground) {
+            showToast(`Đã đồng bộ Google Sheet lúc ${nowStr} (${doneCount}/${liveRecords.length} ca đã phản hồi)`);
+          }
+        }
+      } catch (err) {
+        console.warn('Real-time Google Sheet sync error (falling back to cached data):', err);
+        if (text) text.textContent = 'Live Sync (Offline)';
+        if (!isBackground) {
+          showToast('Không thể kết nối Google Sheet trực tiếp, dùng dữ liệu lưu tạm.');
+        }
+      } finally {
+        isFetchingLive = false;
+        if (dot) dot.classList.remove('syncing');
+        if (icon) icon.classList.remove('spinning');
+      }
+    }
+
+    // Switch between Cycles
+    function switchCycle(cycleKey) {
+      currentCycleKey = cycleKey;
+      loadDecisions();
+
+      const btnW41 = document.getElementById('btnCycleW41');
+      const btnW40 = document.getElementById('btnCycleW40');
+      const cycleBadge = document.getElementById('cycleBadge');
+      const cycleMeta = document.getElementById('cycleMetaInfo');
+      const colHeaderTrend = document.getElementById('colHeaderTrend');
+      const btnUrgentText = document.getElementById('btnUrgentPushText');
+      const progressTitle = document.getElementById('progressBarTitle');
+      const liveSyncBadge = document.getElementById('liveSyncBadge');
+
+      if (cycleKey === 'W41') {
+        btnW41.classList.add('active');
+        btnW40.classList.remove('active');
+        activeDataset = datasetW41;
+        allRecords = datasetW41.records || [];
+        cycleBadge.textContent = 'GTM EXECUTIVE · W41 (LIVE)';
+        cycleMeta.innerHTML = 'Chu kỳ dữ liệu: <strong>W37 – W41 (2026)</strong> · Cơ sở dữ liệu: <strong>Google Sheet Live (Tự động đồng bộ mỗi 30s)</strong>';
+        colHeaderTrend.textContent = 'Biến Động 5 Tuần (W37 → W41)';
+        btnUrgentText.textContent = 'Đôn đốc Miền Trung (11 Tồn)';
+        progressTitle.textContent = 'Tiến độ phản hồi & Thẩm định chất lượng số liệu W41';
+        if (liveSyncBadge) liveSyncBadge.style.display = 'inline-flex';
+        currentRegion = 'ALL';
+      } else {
+        btnW40.classList.add('active');
+        btnW41.classList.remove('active');
+        activeDataset = datasetW40;
+        allRecords = datasetW40.records || [];
+        cycleBadge.textContent = 'GTM EXECUTIVE · W40';
+        cycleMeta.innerHTML = 'Chu kỳ dữ liệu: <strong>W36 – W40 (2026)</strong> · Cơ sở dữ liệu: <strong>Baseline Toàn Quốc (1.690 Shop)</strong>';
+        colHeaderTrend.textContent = 'Biến Động 5 Tuần (W36 → W40)';
+        btnUrgentText.textContent = 'Đôn đốc Miền Nam (167 Tồn)';
+        progressTitle.textContent = 'Tiến độ phản hồi & Thẩm định chất lượng số liệu W40';
+        if (liveSyncBadge) liveSyncBadge.style.display = 'none';
+        currentRegion = 'ALL';
+      }
+
+      selectedSup = 'ALL';
+      currentQuickPill = 'ALL';
+      document.getElementById('searchInput').value = '';
+      document.getElementById('riskSelect').value = 'ALL';
+      document.getElementById('sanitySelect').value = 'ALL';
+      document.getElementById('catSelect').value = 'ALL';
+      document.getElementById('pcActiveSelect').value = 'ALL';
+
+      updateRegionalBadges();
+      populateSupDropdown();
+      applyFilters();
+    }
+
+    // Update Regional Badges on Header Bar
+    function updateRegionalBadges() {
+      const total = allRecords.length;
+      const countNorth = allRecords.filter(r => r.region === 'North').length;
+      const countSouth = allRecords.filter(r => r.region === 'South').length;
+      const countMiddle = allRecords.filter(r => r.region === 'Middle').length;
+
+      const doneTotal = allRecords.filter(r => r.eval.status === 'ĐÃ_FEEDBACK').length;
+      const pctTotal = total > 0 ? ((doneTotal / total) * 100).toFixed(1) : '0.0';
+
+      document.getElementById('badgeAll').textContent = `${total} ca (${pctTotal}%)`;
+      document.getElementById('badgeNorth').textContent = `${countNorth} ca`;
+      document.getElementById('badgeSouth').textContent = `${countSouth} ca`;
+      document.getElementById('badgeMiddle').textContent = `${countMiddle} ca`;
+
+      const tabs = document.querySelectorAll('.region-tab-btn');
+      tabs.forEach(tab => tab.classList.remove('active'));
+      const activeIdx = currentRegion === 'ALL' ? 0 : currentRegion === 'Middle' ? 1 : currentRegion === 'North' ? 2 : 3;
+      if (tabs[activeIdx]) tabs[activeIdx].classList.add('active');
+    }
+
+    // Populate Supervisor Dropdown
+    function populateSupDropdown() {
+      const supMap = {};
+      allRecords.forEach(r => {
+        if (currentRegion === 'ALL' || r.region === currentRegion) {
+          if (!supMap[r.sup]) {
+            supMap[r.sup] = { total: 0, done: 0, suspicious: 0 };
+          }
+          supMap[r.sup].total++;
+          if (r.eval.status === 'ĐÃ_FEEDBACK') supMap[r.sup].done++;
+          if (r.eval.validity === 'SUSPICIOUS') supMap[r.sup].suspicious++;
+        }
+      });
+
+      const supSelect = document.getElementById('supSelect');
+      supSelect.innerHTML = `<option value="ALL">-- Tất cả ${Object.keys(supMap).length} Supervisor --</option>`;
+
+      const sorted = Object.entries(supMap).sort((a, b) => b[1].total - a[1].total);
+      sorted.forEach(([sup, stats]) => {
+        const pct = Math.round((stats.done / stats.total) * 100);
+        const opt = document.createElement('option');
+        opt.value = sup;
+        opt.textContent = `${sup} [${stats.done}/${stats.total} ca · ${pct}%]${stats.suspicious > 0 ? ` [Nghi vấn: ${stats.suspicious}]` : ''}`;
+        supSelect.appendChild(opt);
+      });
+    }
+
+    function onSupSelectChange() {
+      selectedSup = document.getElementById('supSelect').value;
+      applyFilters();
+    }
+
+    function clearSupFilter() {
+      selectedSup = 'ALL';
+      document.getElementById('supSelect').value = 'ALL';
+      applyFilters();
+    }
+
+    function setRegionFilter(region) {
+      currentRegion = region;
+      updateRegionalBadges();
+      populateSupDropdown();
+      applyFilters();
+    }
+
+    function setQuickPill(pill) {
+      currentQuickPill = pill;
+      document.querySelectorAll('.pill-btn').forEach(btn => btn.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+      applyFilters();
+    }
+
+    // Master Filter Engine
+    function applyFilters() {
+      const searchVal = document.getElementById('searchInput').value.trim().toLowerCase();
+      const riskVal = document.getElementById('riskSelect').value;
+      const sanityVal = document.getElementById('sanitySelect').value;
+      const catVal = document.getElementById('catSelect').value;
+      const pcActiveVal = document.getElementById('pcActiveSelect').value;
+
+      const filtered = allRecords.filter(r => {
+        if (currentRegion !== 'ALL' && r.region !== currentRegion) return false;
+        if (selectedSup !== 'ALL' && r.sup !== selectedSup) return false;
+        if (catVal !== 'ALL' && r.category !== catVal) return false;
+
+        // PC Active filter
+        if (pcActiveVal === 'HAS_PC' && (!r.active_pc || r.active_pc <= 0)) return false;
+        if (pcActiveVal === 'NO_PC' && r.active_pc > 0) return false;
+
+        // Sanity Check filter
+        if (sanityVal !== 'ALL') {
+          if (sanityVal === 'SUSPICIOUS') {
+            if (r.eval.validity !== 'SUSPICIOUS' || (r.extra_note && r.extra_note.trim())) return false;
+          } else if (r.eval.validity !== sanityVal) {
+            return false;
+          }
+        }
+
+        // Risk filter
+        if (riskVal !== 'ALL') {
+          if (riskVal === 'P0_CRITICAL' && r.eval.risk_level !== 'P0_CRITICAL') return false;
+          if (riskVal === 'P1_COMMERCIAL' && r.eval.risk_level !== 'P1_COMMERCIAL') return false;
+          if (riskVal === 'P1_SUSPICIOUS' && r.eval.risk_level !== 'P1_SUSPICIOUS') return false;
+          if (riskVal === 'P2_OPERATIONAL' && r.eval.risk_level !== 'P2_OPERATIONAL') return false;
+          if (riskVal === 'P3_NORMAL' && r.eval.risk_level !== 'P3_NORMAL') return false;
+          if (riskVal === 'HIGH' && r.eval.risk_level !== 'HIGH') return false;
+        }
+
+        // Quick Pill filter (Strict MECE Separation: A case with Extra Note is NEVER grouped into SUSPICIOUS)
+        if (currentQuickPill === 'PENDING' && r.eval.status !== 'CHƯA_FEEDBACK') return false;
+        if (currentQuickPill === 'COMMERCIAL_RISK' && r.eval.risk_level !== 'P0_CRITICAL' && r.eval.risk_level !== 'P1_COMMERCIAL') return false;
+        if (currentQuickPill === 'SUSPICIOUS') {
+          if (r.eval.validity !== 'SUSPICIOUS' || (r.extra_note && r.extra_note.trim())) return false;
+        }
+        if (currentQuickPill === 'PC_ERROR' && r.eval.validity !== 'PC_ERROR') return false;
+        if (currentQuickPill === 'PLAUSIBLE' && r.eval.validity !== 'PLAUSIBLE' && r.eval.validity !== 'DATA_MISMATCH') return false;
+        if (currentQuickPill === 'HAS_EXTRA_NOTE' && (!r.extra_note || !r.extra_note.trim())) return false;
+        if (currentQuickPill === 'LG_ONLY' && r.brand !== 'LG') return false;
+
+        // Full text search
+        if (searchVal) {
+          const hay = `${r.store_code} ${r.store_name} ${r.province} ${r.brand} ${r.sup} ${r.feedback_raw} ${r.extra_note || ''} ${r.eval.action_title}`.toLowerCase();
+          if (!hay.includes(searchVal)) return false;
+        }
+
+        return true;
+      });
+
+      renderKPIs(filtered);
+      updateSupBanner(filtered);
+      renderTable(filtered);
+    }
+
+    // Render KPIs
+    function renderKPIs(records) {
+      let countDone = 0, countPending = 0, countRiskP0 = 0, countSuspicious = 0, countPCError = 0, countPlausible = 0, countLG = 0, countExtra = 0;
+
+      records.forEach(r => {
+        if (r.eval.status === 'ĐÃ_FEEDBACK') countDone++;
+        else countPending++;
+
+        if (r.eval.risk_level === 'P0_CRITICAL' || r.eval.risk_level === 'P1_COMMERCIAL') countRiskP0++;
+        // Suspicious is strictly mutually exclusive with having an Extra Note
+        if (r.eval.validity === 'SUSPICIOUS' && (!r.extra_note || !r.extra_note.trim())) countSuspicious++;
+        if (r.eval.validity === 'PC_ERROR') countPCError++;
+        if (r.eval.validity === 'PLAUSIBLE' || r.eval.validity === 'DATA_MISMATCH') countPlausible++;
+        if (r.brand === 'LG') countLG++;
+        if (r.extra_note && r.extra_note.trim()) countExtra++;
+      });
+
+      document.getElementById('kpiDoneCount').textContent = `${countDone} / ${records.length}`;
+      const pct = records.length > 0 ? Math.round((countDone / records.length) * 100) : 0;
+      document.getElementById('kpiDonePercent').textContent = `Tỷ lệ: ${pct}% khu vực đã lọc`;
+
+      document.getElementById('kpiPendingCount').textContent = `${countPending} ca`;
+      document.getElementById('kpiPendingBadge').textContent = countPending;
+      document.getElementById('kpiRiskP0').textContent = `${countRiskP0} ca`;
+      document.getElementById('kpiSuspicious').textContent = `${countSuspicious} ca`;
+      const kpiSuspSub = document.getElementById('kpiSuspiciousSubtext');
+      if (kpiSuspSub) {
+        if (countSuspicious === 0) {
+          kpiSuspSub.textContent = '100% các ca lệch lớn đã được làm rõ bằng Extra Note';
+        } else {
+          kpiSuspSub.textContent = 'Về 0 hoặc lệch >8 nhưng giải trình chung chung';
+        }
+      }
+      document.getElementById('kpiPCError').textContent = `${countPCError} ca`;
+
+      document.getElementById('pillAll').textContent = records.length;
+      document.getElementById('pillPending').textContent = countPending;
+      document.getElementById('pillRiskP0').textContent = countRiskP0;
+      document.getElementById('pillSuspicious').textContent = countSuspicious;
+      document.getElementById('pillPCError').textContent = countPCError;
+      document.getElementById('pillPlausible').textContent = countPlausible;
+      const pillExtraEl = document.getElementById('pillExtraNote');
+      if (pillExtraEl) pillExtraEl.textContent = countExtra;
+      document.getElementById('pillLG').textContent = countLG;
+
+      document.getElementById('barDone').style.width = `${pct}%`;
+      const suspPct = records.length > 0 ? Math.round((countSuspicious / records.length) * 100) : 0;
+      document.getElementById('barSuspicious').style.width = `${suspPct}%`;
+      document.getElementById('progressBarLabel').textContent = `${countDone} Đã làm (${countPlausible} Hợp lệ · ${countPCError} Lỗi PC · ${countSuspicious} Nghi vấn) / ${countPending} Còn tồn`;
+    }
+
+    // Update Supervisor Focus Banner
+    function updateSupBanner(filtered) {
+      const banner = document.getElementById('supFocusBanner');
+      if (selectedSup !== 'ALL') {
+        banner.style.display = 'flex';
+        document.getElementById('currentSupName').textContent = selectedSup;
+
+        const supRecords = allRecords.filter(r => r.sup === selectedSup);
+        const done = supRecords.filter(r => r.eval.status === 'ĐÃ_FEEDBACK').length;
+        const pending = supRecords.length - done;
+        const susp = supRecords.filter(r => r.eval.validity === 'SUSPICIOUS').length;
+        const pct = supRecords.length > 0 ? Math.round((done / supRecords.length) * 100) : 0;
+
+        const sample = supRecords[0];
+        document.getElementById('supRegionBadge').textContent = `Miền ${sample ? (sample.region === 'North' ? 'Bắc' : sample.region === 'South' ? 'Nam' : 'Trung') : ''}`;
+        document.getElementById('supTotalCases').textContent = `${supRecords.length} ca`;
+        document.getElementById('supDoneCases').textContent = `${done} ca (${pct}%)`;
+        document.getElementById('supPendingCases').textContent = `${pending} ca`;
+        document.getElementById('supSuspCases').textContent = `${susp} ca`;
+      } else {
+        banner.style.display = 'none';
+      }
+    }
+
+    // Render Main Audit Table & Mobile Cards
+    function renderTable(records) {
+      const tbody = document.getElementById('tableBody');
+      const cardsContainer = document.getElementById('mobileCardsList');
+
+      if (records.length === 0) {
+        let emptyMsg = 'Không tìm thấy bản ghi nào khớp với điều kiện kiểm soát.';
+        if (currentQuickPill === 'SUSPICIOUS') {
+          emptyMsg = 'Xuất sắc: Không có ca nào nghi vấn đối phó. 100% các ca biến động lớn đã được PC SUP giải trình thực tế bằng Extra Note.';
+        } else if (currentQuickPill === 'COMMERCIAL_RISK') {
+          emptyMsg = 'An toàn: Không có ca nào rủi ro mất quầy hoặc sụt giảm SOF LG.';
+        } else if (currentQuickPill === 'PENDING') {
+          emptyMsg = 'Toàn bộ cửa hàng đã hoàn thành gửi phản hồi.';
+        } else if (currentQuickPill === 'HAS_EXTRA_NOTE') {
+          emptyMsg = 'Chưa có cửa hàng nào có ghi chú bổ sung (Extra Note).';
+        }
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 40px; color: var(--lg-warm-gray-03); font-size: 14px; font-weight: 500;">${emptyMsg}</td></tr>`;
+        if (cardsContainer) {
+          cardsContainer.innerHTML = `<div style="text-align: center; padding: 30px 20px; color: var(--lg-warm-gray-03); background: var(--lg-white); border-radius: 8px; font-size: 14px; font-weight: 500; border: 1px solid var(--lg-warm-gray-05);">${emptyMsg}</div>`;
+        }
+        return;
+      }
+
+      const isW41 = currentCycleKey === 'W41';
+
+      let rowsHtml = '';
+      let cardsHtml = '';
+
+      records.slice(0, 300).forEach(r => {
+        const ev = r.eval;
+        const decision = gtmDecisionStore[r.id];
+
+        let rowClass = '';
+        let cardClass = 'mobile-card';
+        if (ev.risk_level === 'P0_CRITICAL' || ev.risk_level === 'CRITICAL') {
+          rowClass = 'row-critical';
+          cardClass += ' mcard-p0';
+        } else if (ev.validity === 'SUSPICIOUS') {
+          rowClass = 'row-suspicious';
+          cardClass += ' mcard-suspicious';
+        } else if (ev.validity === 'PC_ERROR') {
+          cardClass += ' mcard-pc-error';
+        } else {
+          cardClass += ' mcard-plausible';
+        }
+
+        let dealerClass = 'dealer-badge';
+        if (r.dealer === 'DMX') dealerClass += ' dealer-dmx';
+        else if (r.dealer === 'CP') dealerClass += ' dealer-cp';
+        else if (r.dealer === 'MM') dealerClass += ' dealer-mm';
+        else if (r.dealer === 'VHC') dealerClass += ' dealer-vhc';
+
+        const brandBadge = r.brand === 'LG' 
+          ? `<span class="brand-pill brand-lg">LG</span>` 
+          : `<span class="brand-pill brand-competitor">${r.brand}</span>`;
+
+        // PC Active Badge
+        const pcBadge = r.active_pc > 0 
+          ? `<span class="badge-pc badge-pc-active"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> ${r.active_pc} PC Active</span>`
+          : `<span class="badge-pc badge-pc-zero"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="17" y1="8" x2="23" y2="14"/><line x1="23" y1="8" x2="17" y2="14"/></svg> 0 PC</span>`;
+
+        let flagsHtml = '';
+        if (r.flags.zero_drop) flagsHtml += `<span class="flag-badge flag-zero">Về 0</span> `;
+        if (r.flags.diff_8_4w) flagsHtml += `<span class="flag-badge flag-diff8">Lệch >8</span> `;
+        if (r.flags.diff_2_prev) flagsHtml += `<span class="flag-badge flag-diff2">Lệch >2</span> `;
+        if (r.flags.lg_drop_50) flagsHtml += `<span class="flag-badge flag-zero">LG Giảm >50%</span> `;
+
+        let deltaHtml = '';
+        if (r.delta_wow > 0) deltaHtml = `<span class="delta-badge delta-gain">+${r.delta_wow}</span>`;
+        else if (r.delta_wow < 0) deltaHtml = `<span class="delta-badge delta-drop">${r.delta_wow}</span>`;
+        else deltaHtml = `<span class="delta-badge delta-neutral">0</span>`;
+
+        // Dynamic 5-week history
+        const historyText = isW41
+          ? `${r.w37}→${r.w38}→${r.w39}→${r.w40}`
+          : `${r.w36}→${r.w37}→${r.w38}→${r.w39}`;
+        const currentQty = isW41 ? r.w41 : r.w40;
+
+        let validityTag = '';
+        if (ev.validity === 'PLAUSIBLE') {
+          validityTag = `<span class="tag-validity tag-plausible"><svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> ${escapeHtml(ev.validity_label)}</span>`;
+        } else if (ev.validity === 'DATA_MISMATCH') {
+          validityTag = `<span class="tag-validity" style="background:#fef2f2; color:#b91c1c; border:1px solid #fecaca;"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> ${escapeHtml(ev.validity_label)}</span>`;
+        } else if (ev.validity === 'SUSPICIOUS') {
+          validityTag = `<span class="tag-validity tag-suspicious"><svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Nghi vấn đối phó</span>`;
+        } else if (ev.validity === 'PC_ERROR') {
+          validityTag = `<span class="tag-validity tag-pc-error"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/></svg> Thừa nhận lỗi PC</span>`;
+        } else {
+          validityTag = `<span class="tag-validity tag-pending"><svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Chưa có phản hồi</span>`;
+        }
+
+        let riskTag = '';
+        if (ev.risk_level === 'P0_CRITICAL' || ev.risk_level === 'CRITICAL') {
+          riskTag = `<span class="tag-risk risk-p0"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> P0: Mất SOF LG</span>`;
+        } else if (ev.risk_level === 'P1_COMMERCIAL') {
+          riskTag = `<span class="tag-risk risk-p1-comm">${escapeHtml(ev.risk_label || 'P1: Cắt quầy đại lý')}</span>`;
+        } else if (ev.risk_level === 'P1_SUSPICIOUS' || ev.validity === 'SUSPICIOUS') {
+          riskTag = `<span class="tag-risk risk-p1-susp">P1: Nghi vấn đối phó</span>`;
+        } else if (ev.risk_level === 'P2_OPERATIONAL' || ev.validity === 'PC_ERROR' || ev.validity === 'DATA_MISMATCH') {
+          riskTag = `<span class="tag-risk risk-p2-op">${escapeHtml(ev.risk_label || 'P2: Lỗi vận hành PC')}</span>`;
+        } else if (ev.risk_level === 'P3_NORMAL' || ev.risk_level === 'LOW') {
+          riskTag = `<span class="tag-risk risk-p3-norm">${escapeHtml(ev.risk_label || 'P3: Bình thường')}</span>`;
+        } else {
+          riskTag = `<span class="tag-risk" style="background:var(--lg-warm-gray-06);color:var(--lg-red);border:1px solid rgba(165,0,52,0.2);">Rủi ro tồn đọng</span>`;
+        }
+
+        let actionClass = 'action-box';
+        if (ev.action_code === 'ESCALATE_KAM') actionClass += ' action-kam';
+        else if (ev.action_code === 'REJECT_AND_AUDIT') actionClass += ' action-audit';
+        else if (ev.action_code === 'CORRECT_DATA') actionClass += ' action-audit';
+        else if (ev.action_code === 'COACH_PC') actionClass += ' action-coach';
+        else if (ev.action_code === 'PUSH_SUP') actionClass += ' action-push';
+        else if (ev.action_code === 'ACCEPT' || ev.action_code === 'EXPAND_LG') actionClass += ' action-accept';
+
+        let decisionHtml = '';
+        if (decision === 'APPROVED') {
+          decisionHtml = `<span style="font-size: 11px; font-weight: 700; color: #047857; display:inline-flex; align-items:center; gap:3px;"><svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Đã duyệt</span>`;
+        } else if (decision === 'REJECTED') {
+          decisionHtml = `<span style="font-size: 11px; font-weight: 700; color: #be123c; display:inline-flex; align-items:center; gap:3px;"><svg class="icon icon-sm" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Bác bỏ (Đòi ảnh)</span>`;
+        }
+
+        // Desktop Table Row
+        rowsHtml += `
+          <tr class="${rowClass}">
+            <td>
+              <div style="font-weight: 700; color: var(--lg-warm-gray-01);">
+                <span class="${dealerClass}">${r.dealer}</span>${escapeHtml(r.store_name)}
+              </div>
+              <div style="font-size: 11px; color: var(--lg-warm-gray-03); margin-top: 3px;">
+                Mã: <code>${r.store_code}</code> · <strong>${r.province}</strong> (Miền ${r.region === 'North' ? 'Bắc' : r.region === 'South' ? 'Nam' : 'Trung'})
+              </div>
+              <div style="font-size: 11px; color: var(--lg-warm-gray-02); margin-top: 4px; display:flex; align-items:center; gap:8px;">
+                <span>SUP: <strong>${escapeHtml(r.sup)}</strong></span>
+                ${pcBadge}
+              </div>
+            </td>
+
+            <td>
+              <div style="font-weight: 700; color: var(--lg-active-red); font-family: 'LG EI Headline', sans-serif;">${r.category}</div>
+              <div style="margin-top: 3px;">${brandBadge}</div>
+            </td>
+
+            <td>
+              <div class="trend-numbers">
+                <span class="trend-history">${historyText}</span>
+                <span class="trend-current">${currentQty}</span>
+                ${deltaHtml}
+              </div>
+              <div>${flagsHtml}</div>
+            </td>
+
+            <td>
+              ${r.feedback_raw ? `
+                <div style="font-size: 12px; font-weight: 600; color: var(--lg-warm-gray-01);">
+                  "${escapeHtml(r.feedback_raw)}"
+                </div>
+              ` : `
+                <div style="font-size: 12px; color: var(--lg-warm-gray-03); font-style: italic;">
+                  (Chưa có phản hồi trên Google Sheet)
+                </div>
+              `}
+              ${r.extra_note ? `
+                <div class="extra-note-badge-box">
+                  <div class="extra-note-tag">
+                    <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                    Extra note:
+                  </div>
+                  <div class="extra-note-text">"${escapeHtml(r.extra_note)}"</div>
+                </div>
+              ` : ''}
+            </td>
+
+            <td>
+              <div>${validityTag}</div>
+              <div style="font-size: 11px; color: var(--lg-warm-gray-02); line-height: 1.4; margin-top: 3px;">
+                ${escapeHtml(ev.validity_desc)}
+              </div>
+            </td>
+
+            <td>
+              <div>${riskTag}</div>
+              <div style="font-size: 11px; color: var(--lg-warm-gray-03); margin-top: 4px;">
+                ${escapeHtml(ev.risk_desc)}
+              </div>
+            </td>
+
+            <td>
+              <div class="${actionClass}">
+                <div class="action-title">
+                  <span>${escapeHtml(ev.action_title)}</span>
+                </div>
+                <div class="action-detail">
+                  ${escapeHtml(ev.action_detail)}
+                </div>
+              </div>
+
+              <div class="decision-buttons">
+                <button class="btn-xs ${decision === 'APPROVED' ? 'btn-approved' : ''}" onclick="setGtmDecision('${r.id}', 'APPROVED')">
+                  <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  Duyệt
+                </button>
+                <button class="btn-xs ${decision === 'REJECTED' ? 'btn-rejected' : ''}" onclick="setGtmDecision('${r.id}', 'REJECTED')">
+                  <svg class="icon icon-sm" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  Bác bỏ / Đòi ảnh
+                </button>
+                ${decisionHtml ? `<div style="margin-left:auto;align-self:center;">${decisionHtml}</div>` : ''}
+              </div>
+            </td>
+          </tr>
+        `;
+
+        // Mobile Card Item
+        cardsHtml += `
+          <div class="${cardClass}" id="card_${r.id}">
+            <div class="mcard-header">
+              <div class="mcard-store-info">
+                <div class="mcard-store-title">
+                  <span class="${dealerClass}">${r.dealer}</span>
+                  ${escapeHtml(r.store_name)}
+                </div>
+                <div class="mcard-store-sub">
+                  Mã: <code>${r.store_code}</code> · <strong>${r.province}</strong> (Miền ${r.region === 'North' ? 'Bắc' : r.region === 'South' ? 'Nam' : 'Trung'})
+                </div>
+              </div>
+              <div class="mcard-pc-badge">
+                ${pcBadge}
+              </div>
+            </div>
+
+            <div class="mcard-metrics-row">
+              <div class="mcard-cat-brand">
+                <span class="mcard-cat">${r.category}</span>
+                ${brandBadge}
+              </div>
+              <div class="mcard-trend">
+                <div class="trend-numbers" style="margin-bottom: 2px;">
+                  <span class="trend-history">${historyText}</span>
+                  <span class="trend-current">${currentQty}</span>
+                  ${deltaHtml}
+                </div>
+                <div>${flagsHtml}</div>
+              </div>
+            </div>
+
+            <div class="mcard-sup-row">
+              <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              <span>PC Supervisor: <strong>${escapeHtml(r.sup)}</strong></span>
+            </div>
+
+            <div class="mcard-feedback-box">
+              <div class="mcard-feedback-label">Feedback Của PC SUP:</div>
+              <div class="mcard-feedback-content">
+                ${r.feedback_raw ? `"${escapeHtml(r.feedback_raw)}"` : '<em style="color:var(--lg-warm-gray-03); font-weight: 400;">(Chưa có phản hồi trên Google Sheet)</em>'}
+              </div>
+            </div>
+
+            ${r.extra_note ? `
+              <div class="mcard-extra-note-box">
+                <div class="mcard-extra-note-label">
+                  <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                  Ghi chú bổ sung (Extra Note):
+                </div>
+                <div class="mcard-extra-note-content">"${escapeHtml(r.extra_note)}"</div>
+              </div>
+            ` : ''}
+
+            <div class="mcard-eval-tags">
+              <div>${validityTag}</div>
+              <div>${riskTag}</div>
+            </div>
+            <div class="mcard-eval-desc">
+              ${escapeHtml(ev.validity_desc)}
+            </div>
+
+            <div class="${actionClass} mcard-action-box">
+              <div class="action-title">
+                <span>${escapeHtml(ev.action_title)}</span>
+              </div>
+              <div class="action-detail">
+                ${escapeHtml(ev.action_detail)}
+              </div>
+            </div>
+
+            <div class="mcard-decision-bar">
+              <button class="btn-touch ${decision === 'APPROVED' ? 'btn-approved' : ''}" onclick="setGtmDecision('${r.id}', 'APPROVED')">
+                <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                Duyệt
+              </button>
+              <button class="btn-touch ${decision === 'REJECTED' ? 'btn-rejected' : ''}" onclick="setGtmDecision('${r.id}', 'REJECTED')">
+                <svg class="icon icon-sm" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                Bác bỏ / Đòi ảnh
+              </button>
+              ${decisionHtml ? `<div style="margin-left: 6px; align-self: center;">${decisionHtml}</div>` : ''}
+            </div>
+          </div>
+        `;
+      });
+
+      tbody.innerHTML = rowsHtml;
+      if (cardsContainer) cardsContainer.innerHTML = cardsHtml;
+    }
+
+    // Set Mobile View Mode (CARD vs TABLE)
+    let currentMobileViewMode = 'CARD';
+    function setMobileViewMode(mode) {
+      currentMobileViewMode = mode;
+      const container = document.getElementById('tableContainer');
+      const btnCard = document.getElementById('btnViewCard');
+      const btnTable = document.getElementById('btnViewTable');
+
+      if (!container || !btnCard || !btnTable) return;
+
+      if (mode === 'CARD') {
+        container.classList.add('mobile-card-mode');
+        container.classList.remove('mobile-table-mode');
+        btnCard.classList.add('active');
+        btnTable.classList.remove('active');
+      } else {
+        container.classList.remove('mobile-card-mode');
+        container.classList.add('mobile-table-mode');
+        btnCard.classList.remove('active');
+        btnTable.classList.add('active');
+      }
+    }
+
+    // Set GTM Decision
+    function setGtmDecision(id, decision) {
+      if (gtmDecisionStore[id] === decision) {
+        delete gtmDecisionStore[id];
+      } else {
+        gtmDecisionStore[id] = decision;
+      }
+      localStorage.setItem(`lg_gtm_decisions_${currentCycleKey}`, JSON.stringify(gtmDecisionStore));
+      applyFilters();
+      showToast(gtmDecisionStore[id] ? `Đã lưu quyết định: ${decision === 'APPROVED' ? 'Duyệt' : 'Bác bỏ & Đòi ảnh'}` : 'Đã hủy quyết định.');
+    }
+
+    // Copy Regional Urgent Summary
+    function copyRegionalUrgentSummary() {
+      if (currentCycleKey === 'W41') {
+        const pending = allRecords.filter(r => r.eval.status === 'CHƯA_FEEDBACK');
+        const supCounts = {};
+        pending.forEach(r => { supCounts[r.sup] = (supCounts[r.sup] || 0) + 1; });
+
+        let msg = `[LG GTM · ĐÔN ĐỐC TIẾN ĐỘ SOF W41 - GỬI REGIONAL LEADER MIỀN TRUNG]\n`;
+        if (pending.length === 0) {
+          msg += `Tin tốt: 100% các ca bất thường Miền Trung đã được các SUP giải trình trên Google Sheet.\n`;
+          msg += `GTM đang tiến hành thẩm định và xử lý các ca nghi vấn đối phó.\n`;
+        } else {
+          msg += `Khu vực Miền Trung hiện còn ${pending.length} ca biến động bất thường chưa giải trình (W37-W41).\n\n`;
+          msg += `Danh sách PC Supervisors cần hoàn thành giải trình gấp:\n`;
+
+          Object.entries(supCounts).sort((a,b) => b[1] - a[1]).forEach(([sup, cnt], idx) => {
+            msg += `${idx+1}. SUP ${sup}: còn ${cnt} ca\n`;
+          });
+
+          msg += `\nĐề nghị Regional Leader chỉ đạo các SUP phản hồi trên Google Sheet trước 17:00 Thứ 4 để GTM chốt số tuần.\n`;
+        }
+        msg += `Link Google Sheet: https://docs.google.com/spreadsheets/d/1mpArbb5ShJqtWfgC8yB7pVv70tcTXK7XYKnxGWSGaws/edit?usp=sharing`;
+
+        navigator.clipboard.writeText(msg).then(() => {
+          showToast('Đã sao chép nội dung đôn đốc Miền Trung.');
+        });
+      } else {
+        const southRecords = allRecords.filter(r => r.region === 'South');
+        const pendingSouth = southRecords.filter(r => r.eval.status === 'CHƯA_FEEDBACK');
+        const supCounts = {};
+        pendingSouth.forEach(r => { supCounts[r.sup] = (supCounts[r.sup] || 0) + 1; });
+
+        let msg = `[LG GTM · ĐÔN ĐỐC TIẾN ĐỘ SOF W40 - GỬI REGIONAL LEADER MIỀN NAM]\n`;
+        msg += `Khu vực Miền Nam hiện mới đạt 11.2% tiến độ giải trình (TỒN ĐỌNG 167 / 188 CA).\n\n`;
+        msg += `Top PC Supervisors chưa hoàn thành:\n`;
+
+        Object.entries(supCounts).sort((a,b) => b[1] - a[1]).slice(0, 6).forEach(([sup, cnt], idx) => {
+          msg += `${idx+1}. SUP ${sup}: còn tồn ${cnt} ca\n`;
+        });
+
+        msg += `\nĐề nghị Regional Leader chỉ đạo các SUP hoàn thành giải trình trên Google Sheet trước 17:00 Thứ 4 để GTM chốt số tuần.`;
+
+        navigator.clipboard.writeText(msg).then(() => {
+          showToast('Đã sao chép nội dung đôn đốc Miền Nam.');
+        });
+      }
+    }
+
+    // Copy Direct Sup Push Message
+    function copySupDirectPush() {
+      if (selectedSup === 'ALL') return;
+      const supRecords = allRecords.filter(r => r.sup === selectedSup);
+      const pending = supRecords.filter(r => r.eval.status === 'CHƯA_FEEDBACK');
+      const suspicious = supRecords.filter(r => r.eval.validity === 'SUSPICIOUS');
+
+      let msg = `[LG GTM · YÊU CẦU XÁC MINH SOF ${currentCycleKey} - GỬI SUP ${selectedSup.toUpperCase()}]\n`;
+      msg += `Chào Anh/Chị ${selectedSup},\n`;
+      msg += `Theo rà soát của GTM, Anh/Chị đang có:\n`;
+      msg += `- ${pending.length} ca CHƯA FEEDBACK trên Google Sheet\n`;
+      if (suspicious.length > 0) {
+        msg += `- ${suspicious.length} ca BỊ BÁC BỎ do giải trình chưa rõ ràng (cần gửi ảnh chụp quầy)\n`;
+      }
+      msg += `\nCác shop cần xử lý gấp:\n`;
+
+      pending.slice(0, 5).forEach((r, idx) => {
+        msg += `${idx+1}. ${r.dealer} ${r.store_name} (${r.category}-${r.brand}): biến động ${r.delta_wow >= 0 ? '+' : ''}${r.delta_wow} sets (PC tại shop: ${r.active_pc})\n`;
+      });
+
+      msg += `\nNhờ Anh/Chị cập nhật gấp trước 17:00 Thứ 4 giúp team nhé!`;
+
+      navigator.clipboard.writeText(msg).then(() => {
+        showToast(`Đã sao chép nội dung gửi riêng cho SUP ${selectedSup}.`);
+      });
+    }
+
+    // Export CSV Audit Report
+    function exportAuditReportCSV() {
+      const isW41 = currentCycleKey === 'W41';
+      let csv = '\uFEFF';
+      csv += isW41
+        ? 'Mã Shop,Tên Cửa Hàng,Đại Lý,Khu Vực,Tỉnh,PC Supervisor,PC Active,Ngành Hàng,Brand,W37,W38,W39,W40,W41,Delta_WoW,Cảnh Báo,Feedback PC SUP,Extra Note,Trạng Thái,Thẩm Định Hợp Lý,Chi Tiết Thẩm Định,Cấp Độ Rủi Ro,Mô Tả Rủi Ro,Action Khuyến Nghị GTM,Quyết Định GTM\n'
+        : 'Mã Shop,Tên Cửa Hàng,Đại Lý,Khu Vực,Tỉnh,PC Supervisor,PC Active,Ngành Hàng,Brand,W36,W37,W38,W39,W40,Delta_WoW,Cảnh Báo,Feedback PC SUP,Extra Note,Trạng Thái,Thẩm Định Hợp Lý,Chi Tiết Thẩm Định,Cấp Độ Rủi Ro,Mô Tả Rủi Ro,Action Khuyến Nghị GTM,Quyết Định GTM\n';
+
+      allRecords.forEach(r => {
+        const ev = r.eval;
+        const dec = gtmDecisionStore[r.id] || '';
+        const flagsList = [];
+        if (r.flags.zero_drop) flagsList.push('Về 0');
+        if (r.flags.diff_8_4w) flagsList.push('Lệch >8 (4W)');
+        if (r.flags.diff_2_prev) flagsList.push('Lệch >2 (WoW)');
+        if (r.flags.lg_drop_50) flagsList.push('LG Giảm >50%');
+
+        const histVals = isW41
+          ? `${r.w37},${r.w38},${r.w39},${r.w40},${r.w41}`
+          : `${r.w36},${r.w37},${r.w38},${r.w39},${r.w40}`;
+
+        csv += `"${r.store_code}","${r.store_name}","${r.dealer}","${r.region}","${r.province}","${r.sup}",${r.active_pc},"${r.category}","${r.brand}",${histVals},${r.delta_wow},"${flagsList.join('; ')}","${escapeCsv(r.feedback_raw)}","${escapeCsv(r.extra_note || '')}","${ev.status}","${ev.validity_label}","${escapeCsv(ev.validity_desc)}","${ev.risk_label}","${escapeCsv(ev.risk_desc)}","${escapeCsv(ev.action_title + ': ' + ev.action_detail)}","${dec}"\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.setAttribute('download', `LG_SOF_${currentCycleKey}_Governance_Audit_Report_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast(`Đã tải xuống file báo cáo thẩm định ${currentCycleKey} CSV.`);
+    }
+
+    function openSyncModal() {
+      document.getElementById('syncModal').style.display = 'flex';
+    }
+
+    function closeSyncModal() {
+      document.getElementById('syncModal').style.display = 'none';
+    }
+
+    function escapeCsv(str) {
+      if (!str) return '';
+      return String(str).replace(/"/g, '""');
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function showToast(text) {
+      const toast = document.getElementById('toast');
+      toast.textContent = text;
+      toast.style.display = 'block';
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
