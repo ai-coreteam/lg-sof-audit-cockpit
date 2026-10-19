@@ -927,6 +927,19 @@
       color: #713f12;
       line-height: 1.35;
       display: block;
+      white-space: pre-line;
+    }
+
+    .w41-hint-box {
+      margin-top: 6px;
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-left: 3px solid #0284c7;
+      border-radius: 4px;
+      padding: 5px 8px;
+      font-size: 11px;
+      color: #0369a1;
+      line-height: 1.35;
     }
 
     /* -------------------------------------------------------------
@@ -1073,6 +1086,7 @@
       font-weight: 600;
       color: #713f12;
       line-height: 1.4;
+      white-space: pre-line;
     }
 
     .mcard-eval-tags {
@@ -1180,14 +1194,23 @@
 
       .cycle-switcher {
         width: 100%;
-        justify-content: center;
+        justify-content: flex-start;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+
+      .cycle-switcher::-webkit-scrollbar {
+        display: none;
       }
 
       .cycle-btn {
-        flex: 1;
+        flex: 1 0 auto;
         justify-content: center;
-        padding: 7px 6px;
+        padding: 7px 8px;
         font-size: 11px;
+        white-space: nowrap;
       }
 
       .top-actions {
@@ -1468,7 +1491,7 @@
       <div class="brand-title-group">
         <h1>
           SOF AUDIT & RISK GOVERNANCE COCKPIT
-          <span class="brand-tag" id="cycleBadge">GTM EXECUTIVE · W41 (LIVE)</span>
+          <span class="brand-tag" id="cycleBadge">GTM EXECUTIVE · W42 (LIVE)</span>
         </h1>
         <div class="brand-subtitle">
           Giám Sát Tiến Độ · Thẩm Định Tính Chân Thực Phản Hồi · Quản Trị Rủi Ro Thương Mại & SOF
@@ -1476,11 +1499,15 @@
       </div>
     </div>
 
-    <!-- Cycle Switcher (W41 Live vs W40 Baseline) -->
+    <!-- Cycle Switcher (W42 Live vs W41 Middle Closed vs W40 Baseline) -->
     <div class="cycle-switcher">
-      <button class="cycle-btn active" id="btnCycleW41" onclick="switchCycle('W41')">
+      <button class="cycle-btn active" id="btnCycleW42" onclick="switchCycle('W42')">
         <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        W37–W41 (Google Sheet Live)
+        W38–W42 (Google Sheet Live)
+      </button>
+      <button class="cycle-btn" id="btnCycleW41" onclick="switchCycle('W41')">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        W37–W41 (Middle Đã Chốt)
       </button>
       <button class="cycle-btn" id="btnCycleW40" onclick="switchCycle('W40')">
         <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
@@ -1497,7 +1524,7 @@
         <svg class="icon icon-sm" id="liveSyncIcon" viewBox="0 0 24 24"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
       </div>
 
-      <a href="https://docs.google.com/spreadsheets/d/1mpArbb5ShJqtWfgC8yB7pVv70tcTXK7XYKnxGWSGaws/edit?usp=sharing" target="_blank" class="btn btn-secondary">
+      <a href="https://docs.google.com/spreadsheets/d/1lA6mxuh3yn6TMGWH8TIWOl6PWyKP5PeZ586sOnOGG40/edit?gid=1357809752#gid=1357809752" id="btnOpenSheet" target="_blank" class="btn btn-secondary">
         <svg class="icon" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
         Mở Google Sheet
       </a>
@@ -1507,7 +1534,7 @@
       </button>
       <button class="btn btn-secondary" id="btnUrgentPush" onclick="copyRegionalUrgentSummary()">
         <svg class="icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-        <span id="btnUrgentPushText">Đôn đốc Miền Trung (11 Tồn)</span>
+        <span id="btnUrgentPushText">Đôn đốc Miền Trung (7 Tồn)</span>
       </button>
       <button class="btn btn-primary" onclick="exportAuditReportCSV()">
         <svg class="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -1523,10 +1550,10 @@
     <section class="region-header-row">
       <div class="region-tabs" id="regionTabs">
         <button class="region-tab-btn active" onclick="setRegionFilter('ALL')">
-          Toàn Bộ <span class="badge-count" id="badgeAll">11 ca</span>
+          Toàn Bộ <span class="badge-count" id="badgeAll">16 ca</span>
         </button>
         <button class="region-tab-btn" onclick="setRegionFilter('Middle')">
-          Miền Trung <span class="badge-count" id="badgeMiddle">11 ca</span>
+          Miền Trung <span class="badge-count" id="badgeMiddle">16 ca</span>
         </button>
         <button class="region-tab-btn" onclick="setRegionFilter('North')">
           Miền Bắc <span class="badge-count" id="badgeNorth">0 ca</span>
@@ -1537,7 +1564,7 @@
       </div>
 
       <div style="font-size: 12px; color: var(--lg-warm-gray-03);" id="cycleMetaInfo">
-        Chu kỳ dữ liệu: <strong>W37 – W41 (2026)</strong> · Cơ sở dữ liệu: <strong>Google Sheet Live (Tự động đồng bộ mỗi 30s)</strong>
+        Chu kỳ dữ liệu: <strong>W38 – W42 (2026)</strong> · Cơ sở dữ liệu: <strong>Google Sheet Live (Tự động đồng bộ mỗi 30s)</strong>
       </div>
     </section>
 
@@ -1548,16 +1575,16 @@
           <span>1. Tiến Độ Đã Feedback</span>
           <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
         </div>
-        <div class="kpi-value" id="kpiDoneCount">0 / 11</div>
-        <div class="kpi-subtext" id="kpiDonePercent">Tỷ lệ: 0% khu vực đã lọc</div>
+        <div class="kpi-value" id="kpiDoneCount">9 / 16</div>
+        <div class="kpi-subtext" id="kpiDonePercent">Tỷ lệ: 56% khu vực đã lọc</div>
       </div>
 
       <div class="kpi-card kpi-pending" onclick="setQuickPill('PENDING')">
         <div class="kpi-label">
           <span>Chưa Phản Hồi (Tồn Đọng)</span>
-          <span class="badge-count badge-alert" id="kpiPendingBadge">11</span>
+          <span class="badge-count badge-alert" id="kpiPendingBadge">7</span>
         </div>
-        <div class="kpi-value" style="color: #c2410c;" id="kpiPendingCount">11 ca</div>
+        <div class="kpi-value" style="color: #c2410c;" id="kpiPendingCount">7 ca</div>
         <div class="kpi-subtext">Cần đôn đốc gấp trước thứ 4</div>
       </div>
 
@@ -1584,7 +1611,7 @@
           <span>4. Lỗi PC Báo Sai Tuần Cũ</span>
           <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/></svg>
         </div>
-        <div class="kpi-value" style="color: #2563eb;" id="kpiPCError">0 ca</div>
+        <div class="kpi-value" style="color: #2563eb;" id="kpiPCError">4 ca</div>
         <div class="kpi-subtext">Thừa nhận lỗi nhập liệu tuần trước</div>
       </div>
     </section>
@@ -1592,11 +1619,11 @@
     <!-- Overall Progress Bar -->
     <section class="progress-section">
       <div class="progress-header">
-        <span id="progressBarTitle">Tiến độ phản hồi & Thẩm định chất lượng số liệu W41</span>
-        <span id="progressBarLabel">0 Đã làm / 11 Còn tồn</span>
+        <span id="progressBarTitle">Tiến độ phản hồi & Thẩm định chất lượng số liệu W42</span>
+        <span id="progressBarLabel">9 Đã làm / 7 Còn tồn</span>
       </div>
       <div class="progress-bar-bg">
-        <div class="progress-bar-fill-done" id="barDone" style="width: 0%;"></div>
+        <div class="progress-bar-fill-done" id="barDone" style="width: 56%;"></div>
         <div class="progress-bar-fill-suspicious" id="barSuspicious" style="width: 0%;"></div>
       </div>
     </section>
@@ -1604,11 +1631,11 @@
     <!-- Quick Filter Action Pills -->
     <section class="quick-pills-row">
       <button class="pill-btn active" onclick="setQuickPill('ALL')">
-        Tất cả (<span id="pillAll">11</span>)
+        Tất cả (<span id="pillAll">16</span>)
       </button>
       <button class="pill-btn pill-warning" onclick="setQuickPill('PENDING')">
         <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        Chưa feedback (<span id="pillPending">11</span>)
+        Chưa feedback (<span id="pillPending">7</span>)
       </button>
       <button class="pill-btn pill-danger" onclick="setQuickPill('COMMERCIAL_RISK')">
         <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
@@ -1620,18 +1647,18 @@
       </button>
       <button class="pill-btn" onclick="setQuickPill('PC_ERROR')">
         <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/></svg>
-        Thừa nhận PC báo sai (<span id="pillPCError">0</span>)
+        Thừa nhận PC báo sai (<span id="pillPCError">4</span>)
       </button>
       <button class="pill-btn" onclick="setQuickPill('PLAUSIBLE')">
         <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-        Hợp lý đạt chuẩn (<span id="pillPlausible">0</span>)
+        Hợp lý đạt chuẩn (<span id="pillPlausible">5</span>)
       </button>
       <button class="pill-btn" onclick="setQuickPill('HAS_EXTRA_NOTE')" style="border-color: #fde047; color: #854d0e; background: #fefce8;">
         <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-        Có Extra note (<span id="pillExtraNote">0</span>)
+        Có Extra note (<span id="pillExtraNote">6</span>)
       </button>
       <button class="pill-btn" onclick="setQuickPill('LG_ONLY')">
-        Thương hiệu LG (<span id="pillLG">5</span>)
+        Thương hiệu LG (<span id="pillLG">3</span>)
       </button>
     </section>
 
@@ -1711,16 +1738,16 @@
         <label class="filter-label">Ngành hàng (Category)</label>
         <select id="catSelect" class="filter-select" onchange="applyFilters()">
           <option value="ALL">-- Tất cả ngành --</option>
-          <option value="WM">WM - Máy giặt</option>
-          <option value="REF">REF - Tủ lạnh</option>
-          <option value="RAC">RAC - Điều hòa</option>
+          <option value="WM">WM - Máy Giặt</option>
+          <option value="REF">REF - Tủ Lạnh</option>
+          <option value="RAC">RAC - Điều Hòa</option>
           <option value="TV">TV - Tivi</option>
-          <option value="AP">AP - Lọc không khí</option>
-          <option value="MWO">MWO - Lò vi sóng</option>
-          <option value="DW">DW - Máy rửa bát</option>
-          <option value="VC">VC - Máy hút bụi</option>
-          <option value="DEHUM">DEHUM - Máy hút ẩm</option>
-          <option value="AV">AV - Âm thanh</option>
+          <option value="AP">AP - Lọc Không Khí</option>
+          <option value="MWO">MWO - Lò Vi Sóng</option>
+          <option value="DW">DW - Máy Rửa Bát</option>
+          <option value="VC">VC - Máy Hút Bụi</option>
+          <option value="DEHUM">DEHUM - Máy Hút Ẩm</option>
+          <option value="AV">AV - Âm Thanh</option>
         </select>
       </div>
     </section>
@@ -1753,7 +1780,7 @@
           <tr>
             <th style="width: 270px;">Cửa Hàng & Kênh Bán Lẻ</th>
             <th style="width: 100px;">Ngành · Brand</th>
-            <th style="width: 170px;" id="colHeaderTrend">Biến Động 5 Tuần (W37 → W41)</th>
+            <th style="width: 170px;" id="colHeaderTrend">Biến Động 5 Tuần (W38 → W42)</th>
             <th style="width: 220px;">Feedback Của PC SUP</th>
             <th style="width: 200px;">Thẩm Định Tính Hợp Lý</th>
             <th style="width: 160px;">Cấp Độ Rủi Ro</th>
@@ -1776,8 +1803,8 @@
         Đồng Bộ Dữ Liệu Thời Gian Thực (Real-Time Live Sync)
       </div>
       <div class="modal-body">
-        <p>Hệ thống tự động liên kết với Google Sheet điều hành của bạn:</p>
-        <p style="margin-top: 6px;"><a href="https://docs.google.com/spreadsheets/d/1mpArbb5ShJqtWfgC8yB7pVv70tcTXK7XYKnxGWSGaws/edit?usp=sharing" target="_blank" style="color: var(--lg-active-red); font-weight: 600;">https://docs.google.com/spreadsheets/d/1mpArbb5ShJqtWfgC8yB7pVv70tcTXK7XYKnxGWSGaws/edit</a></p>
+        <p>Hệ thống tự động liên kết với Google Sheet điều hành tuần hiện tại (W38–W42):</p>
+        <p style="margin-top: 6px;"><a href="https://docs.google.com/spreadsheets/d/1lA6mxuh3yn6TMGWH8TIWOl6PWyKP5PeZ586sOnOGG40/edit?gid=1357809752#gid=1357809752" id="syncModalSheetLink" target="_blank" style="color: var(--lg-active-red); font-weight: 600;">https://docs.google.com/spreadsheets/d/1lA6mxuh3yn6TMGWH8TIWOl6PWyKP5PeZ586sOnOGG40/edit</a></p>
         
         <p style="margin-top: 14px;"><strong>Cơ chế tự động Real-time:</strong></p>
         <ul style="margin-left: 20px; font-size: 12px; color: var(--lg-warm-gray-02); line-height: 1.6; margin-top: 6px;">
@@ -1818,19 +1845,21 @@
   <!-- Embedded Datasets -->
   <script src="assets/w40_audit_cockpit.js"></script>
   <script src="assets/w41_audit_cockpit.js"></script>
+  <script src="assets/w42_audit_cockpit.js"></script>
 
   <script>
     // Configuration & State
-    const GOOGLE_SHEET_ID = "1mpArbb5ShJqtWfgC8yB7pVv70tcTXK7XYKnxGWSGaws";
+    const GOOGLE_SHEET_ID_W42 = "1lA6mxuh3yn6TMGWH8TIWOl6PWyKP5PeZ586sOnOGG40";
+    const GOOGLE_SHEET_ID_W41 = "1mpArbb5ShJqtWfgC8yB7pVv70tcTXK7XYKnxGWSGaws";
     const SHEET_GID = "1357809752";
-    const CSV_ENDPOINT = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/export?format=csv&gid=${SHEET_GID}`;
-    const GVIZ_ENDPOINT = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/gviz/tq?tqx=out:json&sheet=Check%20theo%20CAT,%20theo%20Brand`;
+    const CSV_ENDPOINT_W42 = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID_W42}/export?format=csv&gid=${SHEET_GID}`;
     
-    let currentCycleKey = 'W41'; // Default: W41 (Live Google Sheet)
+    let currentCycleKey = 'W42'; // Default: W42 (Live Google Sheet)
+    let datasetW42 = window.SOF_AUDIT_DATA_W42 || { records: [], weeks: ['W38', 'W39', 'W40', 'W41', 'W42'], store_master: {}, w41_exact_hints: {}, w41_shop_hints: {} };
     let datasetW41 = window.SOF_AUDIT_DATA_W41 || { records: [], weeks: ['W37', 'W38', 'W39', 'W40', 'W41'] };
     let datasetW40 = window.SOF_AUDIT_DATA || { records: [], weeks: ['W36', 'W37', 'W38', 'W39', 'W40'] };
     
-    let activeDataset = datasetW41;
+    let activeDataset = datasetW42;
     let allRecords = activeDataset.records || [];
     let currentRegion = 'ALL';
     let currentQuickPill = 'ALL';
@@ -1839,31 +1868,79 @@
     let isFetchingLive = false;
     let autoSyncTimer = null;
 
-    // Master Store Info Cache
+    // Dealer inference helper (fixes "CAOPHONG" without space -> "CP")
+    function inferDealerClient(shopName, fallbackDealer, fallbackChannel) {
+      const sUpper = String(shopName || '').trim().toUpperCase();
+      if (sUpper.startsWith('DMX') || sUpper.startsWith('ĐMX')) return { dealer: 'DMX', channel: 'MC' };
+      if (sUpper.startsWith('CP') || sUpper.startsWith('CAO PHONG') || sUpper.startsWith('CAOPHONG')) return { dealer: 'CP', channel: 'MC' };
+      if (sUpper.startsWith('MM')) return { dealer: 'MM', channel: 'MC' };
+      if (sUpper.startsWith('VHC')) return { dealer: 'VHC', channel: 'MC' };
+      if (sUpper.startsWith('NK') || sUpper.startsWith('NGUYEN KIM')) return { dealer: 'NK', channel: 'MC' };
+      if (sUpper.startsWith('pico') || sUpper.startsWith('PICO')) return { dealer: 'PICO', channel: 'MC' };
+      if (sUpper.startsWith('MC') || sUpper.startsWith('MEDIAMART')) return { dealer: 'MEDIAMART', channel: 'MC' };
+      if (fallbackDealer && fallbackDealer !== 'Tradi') {
+        return { dealer: fallbackDealer, channel: fallbackChannel || 'MC' };
+      }
+      return { dealer: fallbackDealer || 'Tradi', channel: fallbackChannel || 'Traditional' };
+    }
+
+    // Master Store Info Cache & W41 History Hint Lookup
     const storeMasterCache = {};
+    const w41ExactHints = {};
+    const w41ShopHints = {};
+
     function initStoreCache() {
-      (datasetW40.records || []).forEach(r => {
-        storeMasterCache[r.store_code] = {
-          store_name: r.store_name,
-          dealer: r.dealer,
-          channel: r.channel,
-          province: r.province,
-          district: r.district,
-          sup: r.sup,
-          active_pc: r.active_pc
-        };
-      });
-      (datasetW41.records || []).forEach(r => {
-        if (!storeMasterCache[r.store_code]) {
-          storeMasterCache[r.store_code] = {
-            store_name: r.store_name,
-            dealer: r.dealer,
-            channel: r.channel,
-            province: r.province,
-            district: r.district,
-            sup: r.sup,
-            active_pc: r.active_pc
+      // 1. Load embedded store_master from W42 (extracted from Mapping PC SUP)
+      if (datasetW42 && datasetW42.store_master) {
+        Object.entries(datasetW42.store_master).forEach(([code, info]) => {
+          const d = inferDealerClient(info.store_name, info.dealer, info.channel);
+          storeMasterCache[code] = {
+            store_name: info.store_name || '',
+            dealer: d.dealer,
+            channel: d.channel,
+            province: info.province || '',
+            district: info.district || '',
+            sup: info.sup || '',
+            active_pc: info.active_pc || 0
           };
+        });
+      }
+      // 2. Enrich from W40, W41, W42 records
+      [datasetW40.records || [], datasetW41.records || [], datasetW42.records || []].forEach(list => {
+        list.forEach(r => {
+          const d = inferDealerClient(r.store_name, r.dealer, r.channel);
+          r.dealer = d.dealer;
+          r.channel = d.channel;
+          if (!storeMasterCache[r.store_code] || !storeMasterCache[r.store_code].province) {
+            storeMasterCache[r.store_code] = {
+              store_name: r.store_name,
+              dealer: d.dealer,
+              channel: d.channel,
+              province: r.province || (storeMasterCache[r.store_code] && storeMasterCache[r.store_code].province) || '',
+              district: r.district || (storeMasterCache[r.store_code] && storeMasterCache[r.store_code].district) || '',
+              sup: r.sup,
+              active_pc: r.active_pc
+            };
+          }
+        });
+      });
+      // 3. Build W41 history hints for W42 cross-cycle reference
+      if (datasetW42 && datasetW42.w41_exact_hints) {
+        Object.assign(w41ExactHints, datasetW42.w41_exact_hints);
+      }
+      if (datasetW42 && datasetW42.w41_shop_hints) {
+        Object.assign(w41ShopHints, datasetW42.w41_shop_hints);
+      }
+      (datasetW41.records || []).forEach(r => {
+        const key = `${r.store_code}|${r.category}|${r.brand}`;
+        const fb = (r.feedback_raw || '').trim();
+        const extra = (r.extra_note || '').trim();
+        const summary = `${fb}${extra ? ` (Extra note: ${extra})` : ''}`;
+        if (!w41ExactHints[key]) {
+          w41ExactHints[key] = `Ca lặp lại từ W41: "${summary}"`;
+        }
+        if (!w41ShopHints[r.store_code]) {
+          w41ShopHints[r.store_code] = `Shop từng giải trình ở W41 (${r.category}-${r.brand}: ${summary})`;
         }
       });
     }
@@ -1871,21 +1948,21 @@
     window.addEventListener('DOMContentLoaded', () => {
       initStoreCache();
       loadDecisions();
-      switchCycle('W41');
+      switchCycle('W42');
 
       // Auto-trigger live fetch on startup
       fetchGoogleSheetLive(true);
 
       // Background auto-refresh timer (every 30 seconds)
       autoSyncTimer = setInterval(() => {
-        if (currentCycleKey === 'W41') {
+        if (currentCycleKey === 'W42') {
           fetchGoogleSheetLive(true);
         }
       }, 30000);
 
       // Auto-sync whenever user focuses back on window
       window.addEventListener('focus', () => {
-        if (currentCycleKey === 'W41') {
+        if (currentCycleKey === 'W42') {
           fetchGoogleSheetLive(true);
         }
       });
@@ -1901,17 +1978,19 @@
       }
     }
 
-    // Client-side Sanity & Risk Evaluation
+    // Client-side Sanity & Risk Evaluation (supports W42 and W41)
     function evaluateFeedbackClient(record) {
       const fbRaw = (record.feedback_raw || '').trim();
+      const extraNote = (record.extra_note || '').trim();
       const fbLower = fbRaw.toLowerCase();
+      const extraLower = extraNote.toLowerCase();
       const brand = record.brand || '';
-      const wCur = record.w41 || 0;
-      const wPrev = record.w40 || 0;
+      const wCur = record.w42 !== undefined ? (record.w42 || 0) : (record.w41 || 0);
+      const wPrev = record.w42 !== undefined ? (record.w41 || 0) : (record.w40 || 0);
       const delta = wCur - wPrev;
       const flags = record.flags || {};
 
-      if (!fbRaw) {
+      if (!fbRaw && !extraNote) {
         return {
           status: 'CHƯA_FEEDBACK',
           validity: 'PENDING',
@@ -1926,35 +2005,64 @@
         };
       }
 
-      const extraNote = (record.extra_note || '').trim();
-      const extraLower = extraNote.toLowerCase();
+      const extraClean = extraNote.replace(/\r\n/g, ' · ').replace(/\n/g, ' · ');
+
+      // Rule SAN-03: Explicit PC error admission in Feedback dropdown (prioritized even if Extra Note is also attached)
+      if (fbLower.includes('báo sai') || fbLower.includes('nhập sai') || fbLower.includes('điều chỉnh lại')) {
+        return {
+          status: 'ĐÃ_FEEDBACK',
+          validity: 'PC_ERROR',
+          validity_label: 'Thừa nhận PC báo sai',
+          validity_desc: extraClean
+            ? `SUP thừa nhận PC báo sai tuần cũ; bổ sung thực tế: "${extraClean}".`
+            : 'SUP thừa nhận nhân viên PC báo sai số tuần trước, tuần này sửa lại',
+          risk_level: 'P2_OPERATIONAL',
+          risk_label: 'Lỗi vận hành PC',
+          risk_desc: 'Số liệu quá khứ không đáng tin cậy. Cần kiểm điểm kỷ luật PC.',
+          action_code: 'COACH_PC',
+          action_title: 'Kiểm điểm & Đào tạo PC',
+          action_detail: extraClean
+            ? `Kiểm điểm PC báo sai tuần cũ & cập nhật theo thực địa: '${extraClean}'.`
+            : 'Yêu cầu SUP đào tạo lại quy trình kiểm đếm cho PC tại điểm bán.'
+        };
+      }
 
       // Rule SAN-EXTRA: If SUP/Manager provided an Extra Note, the case is no longer an unsubstantiated generic excuse.
       // It is immediately resolved into PLAUSIBLE or DATA_MISMATCH and MUST NOT be classified as SUSPICIOUS.
       if (extraNote) {
-        // Case 1: Count correction / Mismatch (số đúng là, không phải, sets, sai số, lệch số...)
-        if (extraLower.includes('số đúng là') || extraLower.includes('không phải') || extraLower.includes('khổng phải') || extraLower.includes('sets') || extraLower.includes('sai số') || extraLower.includes('lệch số')) {
+        // Case 1: Count correction / Mismatch (số đúng là, không phải, sets, sai số, lệch số, week trước chỉ...)
+        if (
+          extraLower.includes('số đúng là') ||
+          extraLower.includes('không phải') ||
+          extraLower.includes('khổng phải') ||
+          extraLower.includes('sets') ||
+          extraLower.includes('sai số') ||
+          extraLower.includes('lệch số') ||
+          extraLower.includes('nhập nhầm') ||
+          extraLower.includes('week trước chỉ') ||
+          extraLower.includes('tuần trước chỉ')
+        ) {
           return {
             status: 'ĐÃ_FEEDBACK',
             validity: 'DATA_MISMATCH',
             validity_label: 'Sai lệch số thực tế',
-            validity_desc: `SUP bổ sung: "${extraNote}". Số trên hệ thống không khớp với thực tế kiểm đếm.`,
+            validity_desc: `SUP bổ sung: "${extraClean}". Số trên hệ thống không khớp với thực tế kiểm đếm.`,
             risk_level: 'P2_OPERATIONAL',
             risk_label: 'Dữ liệu Sheet bị lệch số',
             risk_desc: 'Số liệu trên Sheet khai khống so với thực tế. Cần hiệu chỉnh lại số đúng.',
             action_code: 'CORRECT_DATA',
             action_title: 'Bác bỏ & Hiệu chỉnh số liệu',
-            action_detail: `Yêu cầu sửa số liệu chính thức theo ghi chú thực tế: '${extraNote}'; kiểm điểm PC.`
+            action_detail: `Yêu cầu sửa số liệu chính thức theo ghi chú thực tế: '${extraClean}'; kiểm điểm PC.`
           };
         }
 
-        // Case 2: Competitor shelf cut / delisting for non-LG brands (cắt, bỏ mẫu, đảo...)
-        if ((extraLower.includes('cắt') || extraLower.includes('bỏ mẫu') || extraLower.includes('đảo')) && brand !== 'LG') {
+        // Case 2: Competitor shelf cut / delisting for non-LG brands (excluding balanced model rotation "lên ... cắt ...")
+        if ((extraLower.includes('cắt') || extraLower.includes('bỏ mẫu') || extraLower.includes('đảo')) && !extraLower.includes('lên ') && brand !== 'LG') {
           return {
             status: 'ĐÃ_FEEDBACK',
             validity: 'PLAUSIBLE',
             validity_label: 'Đã làm rõ (Extra Note)',
-            validity_desc: `SUP bổ sung thông tin thực địa: "${extraNote}".`,
+            validity_desc: `SUP bổ sung thông tin thực địa: "${extraClean}".`,
             risk_level: 'P3_NORMAL',
             risk_label: `Đối thủ ${brand} bị cắt giảm`,
             risk_desc: `Thị trường thu hẹp trưng bày model đối thủ ${brand} tại cửa hàng.`,
@@ -1969,13 +2077,13 @@
           status: 'ĐÃ_FEEDBACK',
           validity: 'PLAUSIBLE',
           validity_label: 'Đã làm rõ (Extra Note)',
-          validity_desc: `SUP bổ sung: "${extraNote}". Đã làm rõ nguyên nhân biến động thực tế.`,
+          validity_desc: `SUP bổ sung: "${extraClean}". Đã làm rõ nguyên nhân biến động thực tế.`,
           risk_level: 'P3_NORMAL',
           risk_label: 'Biến động đã làm rõ',
           risk_desc: 'Cửa hàng đã giải trình cụ thể biến động thực tế.',
           action_code: 'ACCEPT',
           action_title: 'Phê duyệt giải trình (Có Extra Note)',
-          action_detail: `Chấp thuận do SUP đã bổ sung nguyên nhân thực địa: '${extraNote}'.`
+          action_detail: `Chấp thuận do SUP đã bổ sung nguyên nhân thực địa: '${extraClean}'.`
         };
       }
 
@@ -2008,22 +2116,6 @@
           action_code: 'REJECT_AND_AUDIT',
           action_title: 'Yêu cầu ảnh & Biên bản',
           action_detail: 'Yêu cầu SUP giải trình chi tiết lý do biến động đột biến.'
-        };
-      }
-
-      // Rule SAN-03: PC error admission
-      if (fbLower.includes('báo sai') || fbLower.includes('nhập sai') || fbLower.includes('điều chỉnh lại')) {
-        return {
-          status: 'ĐÃ_FEEDBACK',
-          validity: 'PC_ERROR',
-          validity_label: 'Thừa nhận PC báo sai',
-          validity_desc: 'SUP thừa nhận nhân viên PC báo sai số tuần trước, tuần này sửa lại',
-          risk_level: 'P2_OPERATIONAL',
-          risk_label: 'Lỗi vận hành PC',
-          risk_desc: 'Số liệu quá khứ không đáng tin cậy. Cần kiểm điểm kỷ luật PC.',
-          action_code: 'COACH_PC',
-          action_title: 'Kiểm điểm & Đào tạo PC',
-          action_detail: 'Yêu cầu SUP đào tạo lại quy trình kiểm đếm cho PC tại điểm bán.'
         };
       }
 
@@ -2074,44 +2166,56 @@
       };
     }
 
-    // Robust CSV parser supporting quotes and commas
+    // RFC-4180 CSV parser supporting multi-line quoted cells and escaped quotes
     function parseCsvToRows(text) {
-      const lines = text.split(/\r?\n/);
       const rows = [];
-      for (let i = 0; i < lines.length; i++) {
-        const line = lines[i];
-        if (!line.trim()) continue;
-        const row = [];
-        let insideQuotes = false;
-        let entry = '';
-        for (let j = 0; j < line.length; j++) {
-          const char = line[j];
-          if (char === '"') {
-            if (insideQuotes && line[j+1] === '"') {
-              entry += '"';
-              j++;
-            } else {
-              insideQuotes = !insideQuotes;
-            }
-          } else if (char === ',' && !insideQuotes) {
-            row.push(entry);
-            entry = '';
+      let row = [];
+      let entry = '';
+      let insideQuotes = false;
+
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        const nextChar = text[i + 1];
+
+        if (char === '"') {
+          if (insideQuotes && nextChar === '"') {
+            entry += '"';
+            i++;
           } else {
-            entry += char;
+            insideQuotes = !insideQuotes;
           }
+        } else if (char === ',' && !insideQuotes) {
+          row.push(entry);
+          entry = '';
+        } else if ((char === '\r' || char === '\n') && !insideQuotes) {
+          if (char === '\r' && nextChar === '\n') {
+            i++;
+          }
+          row.push(entry);
+          if (row.some(cell => String(cell).trim() !== '')) {
+            rows.push(row);
+          }
+          row = [];
+          entry = '';
+        } else {
+          entry += char;
         }
+      }
+
+      if (entry.length > 0 || row.length > 0) {
         row.push(entry);
-        rows.push(row);
+        if (row.some(cell => String(cell).trim() !== '')) {
+          rows.push(row);
+        }
       }
       return rows;
     }
 
-    // REAL-TIME Live Google Sheet Fetcher (CSV Primary with GVIZ Fallback)
+    // REAL-TIME Live Google Sheet Fetcher for W42 (Header-Aware CSV Parser)
     async function fetchGoogleSheetLive(isBackground = false) {
       if (isFetchingLive) return;
       isFetchingLive = true;
 
-      const badge = document.getElementById('liveSyncBadge');
       const dot = document.getElementById('livePulseDot');
       const text = document.getElementById('liveSyncText');
       const icon = document.getElementById('liveSyncIcon');
@@ -2121,7 +2225,7 @@
       if (text) text.textContent = 'Đang đồng bộ...';
 
       try {
-        const fetchUrl = `${CSV_ENDPOINT}&t=${Date.now()}`;
+        const fetchUrl = `${CSV_ENDPOINT_W42}&t=${Date.now()}`;
         const response = await fetch(fetchUrl);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         
@@ -2129,14 +2233,34 @@
         const rows = parseCsvToRows(rawCsv);
         if (rows.length < 2) throw new Error('Dữ liệu CSV không hợp lệ');
 
+        // Header-aware column index detection (handles Region vs PC Active swap between W41 and W42)
+        let pcActiveCol = 4;
+        let regionCol = 3;
+        let fbCol = 15;
+        let extraCol = 17;
+
+        for (let rIdx = 0; rIdx < Math.min(3, rows.length); rIdx++) {
+          const hRow = rows[rIdx] || [];
+          for (let cIdx = 0; cIdx < hRow.length; cIdx++) {
+            const cellLower = String(hRow[cIdx] || '').trim().toLowerCase();
+            if (cellLower.includes('pc active')) pcActiveCol = cIdx;
+            else if (cellLower === 'region') regionCol = cIdx;
+            else if (cellLower.includes('extra note') || cellLower.includes('ghi chú')) extraCol = cIdx;
+            else if (cellLower === 'feedback') fbCol = cIdx;
+          }
+        }
+
         const liveRecords = [];
         for (let i = 2; i < rows.length; i++) {
           const r = rows[i];
-          if (!r || r.length < 16) continue;
+          if (!r || r.length < 15) continue;
 
           function getCell(idx) {
             return (r[idx] !== undefined && r[idx] !== null) ? String(r[idx]).trim() : '';
           }
+
+          const shopCode = getCell(0);
+          if (!shopCode || shopCode.toLowerCase() === 'shop_code') continue;
 
           const d2 = getCell(12).toLowerCase();
           const d8 = getCell(13).toLowerCase();
@@ -2147,32 +2271,37 @@
           const isZ0 = z0.includes('x') || z0 === '1';
 
           if (isD2 || isD8 || isZ0) {
-            const shopCode = getCell(0);
             const master = storeMasterCache[shopCode] || {};
-            
             const shopName = getCell(1) || master.store_name || '';
             const sup = getCell(2) || master.sup || '';
-            const pcActRaw = getCell(3);
+
+            const pcActRaw = getCell(pcActiveCol);
             const parsedPc = parseInt(pcActRaw, 10);
             const activePc = !isNaN(parsedPc) ? parsedPc : (master.active_pc || 0);
-            const reg = getCell(4) || master.region || 'Middle';
+
+            const regRaw = getCell(regionCol);
+            const reg = (regRaw && isNaN(Number(regRaw))) ? regRaw : (master.region || 'Middle');
+
             const cat = getCell(5) || '';
             const brand = getCell(6) || '';
 
-            const w37 = Math.round(Number(getCell(7)) || 0);
-            const w38 = Math.round(Number(getCell(8)) || 0);
-            const w39 = Math.round(Number(getCell(9)) || 0);
-            const w40 = Math.round(Number(getCell(10)) || 0);
-            const w41 = Math.round(Number(getCell(11)) || 0);
-            const fb = getCell(15);
-            const extraNote = getCell(17);
+            const w38 = Math.round(Number(getCell(7)) || 0);
+            const w39 = Math.round(Number(getCell(8)) || 0);
+            const w40 = Math.round(Number(getCell(9)) || 0);
+            const w41 = Math.round(Number(getCell(10)) || 0);
+            const w42 = Math.round(Number(getCell(11)) || 0);
+            const fb = getCell(fbCol);
+            const extraNote = getCell(extraCol);
+
+            const dInfo = inferDealerClient(shopName, master.dealer, master.channel);
+            const w41Hint = w41ExactHints[`${shopCode}|${cat}|${brand}`] || w41ShopHints[shopCode] || '';
 
             const rec = {
               id: `${shopCode}_${cat}_${brand}`,
               store_code: shopCode,
               store_name: shopName,
-              dealer: master.dealer || 'DMX',
-              channel: master.channel || 'MC',
+              dealer: dInfo.dealer,
+              channel: dInfo.channel,
               region: reg,
               province: master.province || '',
               district: master.district || '',
@@ -2180,20 +2309,21 @@
               active_pc: activePc,
               category: cat,
               brand: brand,
-              w37: w37,
               w38: w38,
               w39: w39,
               w40: w40,
               w41: w41,
-              delta_wow: w41 - w40,
+              w42: w42,
+              delta_wow: w42 - w41,
               flags: {
                 diff_8_4w: isD8,
                 diff_2_prev: isD2,
                 zero_drop: isZ0,
-                lg_drop_50: (brand === 'LG' && w40 > 0 && w41 <= w40 * 0.5)
+                lg_drop_50: (brand === 'LG' && w41 > 0 && w42 <= w41 * 0.5)
               },
               feedback_raw: fb,
-              extra_note: extraNote
+              extra_note: extraNote,
+              w41_hint: w41Hint
             };
 
             rec.eval = evaluateFeedbackClient(rec);
@@ -2202,22 +2332,26 @@
         }
 
         if (liveRecords.length > 0) {
-          datasetW41.records = liveRecords;
-          datasetW41.total_records = liveRecords.length;
+          datasetW42.records = liveRecords;
+          datasetW42.total_records = liveRecords.length;
 
-          if (currentCycleKey === 'W41') {
-            allRecords = datasetW41.records;
+          const doneCount = liveRecords.filter(r => r.eval.status === 'ĐÃ_FEEDBACK').length;
+          const pendingCount = liveRecords.length - doneCount;
+
+          if (currentCycleKey === 'W42') {
+            allRecords = datasetW42.records;
+            const btnUrgentText = document.getElementById('btnUrgentPushText');
+            if (btnUrgentText) btnUrgentText.textContent = `Đôn đốc Miền Trung (${pendingCount} Tồn)`;
             updateRegionalBadges();
             populateSupDropdown();
             applyFilters();
           }
 
-          const doneCount = liveRecords.filter(r => r.eval.status === 'ĐÃ_FEEDBACK').length;
           const nowStr = new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
           if (text) text.textContent = `Live: ${nowStr}`;
           
           if (!isBackground) {
-            showToast(`Đã đồng bộ Google Sheet lúc ${nowStr} (${doneCount}/${liveRecords.length} ca đã phản hồi)`);
+            showToast(`Đã đồng bộ Google Sheet W42 lúc ${nowStr} (${doneCount}/${liveRecords.length} ca đã phản hồi)`);
           }
         }
       } catch (err) {
@@ -2233,11 +2367,12 @@
       }
     }
 
-    // Switch between Cycles
+    // Switch between Cycles (W42 Live vs W41 Middle Closed vs W40 National Baseline)
     function switchCycle(cycleKey) {
       currentCycleKey = cycleKey;
       loadDecisions();
 
+      const btnW42 = document.getElementById('btnCycleW42');
       const btnW41 = document.getElementById('btnCycleW41');
       const btnW40 = document.getElementById('btnCycleW40');
       const cycleBadge = document.getElementById('cycleBadge');
@@ -2246,22 +2381,51 @@
       const btnUrgentText = document.getElementById('btnUrgentPushText');
       const progressTitle = document.getElementById('progressBarTitle');
       const liveSyncBadge = document.getElementById('liveSyncBadge');
+      const btnOpenSheet = document.getElementById('btnOpenSheet');
+      const syncModalLink = document.getElementById('syncModalSheetLink');
 
-      if (cycleKey === 'W41') {
-        btnW41.classList.add('active');
-        btnW40.classList.remove('active');
+      if (btnW42) btnW42.classList.remove('active');
+      if (btnW41) btnW41.classList.remove('active');
+      if (btnW40) btnW40.classList.remove('active');
+
+      if (cycleKey === 'W42') {
+        if (btnW42) btnW42.classList.add('active');
+        activeDataset = datasetW42;
+        allRecords = datasetW42.records || [];
+        const pendingW42 = allRecords.filter(r => r.eval.status === 'CHƯA_FEEDBACK').length;
+        cycleBadge.textContent = 'GTM EXECUTIVE · W42 (LIVE)';
+        cycleMeta.innerHTML = 'Chu kỳ dữ liệu: <strong>W38 – W42 (2026)</strong> · Cơ sở dữ liệu: <strong>Google Sheet Live (Tự động đồng bộ mỗi 30s)</strong>';
+        colHeaderTrend.textContent = 'Biến Động 5 Tuần (W38 → W42)';
+        btnUrgentText.textContent = `Đôn đốc Miền Trung (${pendingW42} Tồn)`;
+        progressTitle.textContent = 'Tiến độ phản hồi & Thẩm định chất lượng số liệu W42';
+        if (liveSyncBadge) liveSyncBadge.style.display = 'inline-flex';
+        const urlW42 = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID_W42}/edit?gid=${SHEET_GID}#gid=${SHEET_GID}`;
+        if (btnOpenSheet) btnOpenSheet.href = urlW42;
+        if (syncModalLink) {
+          syncModalLink.href = urlW42;
+          syncModalLink.textContent = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID_W42}/edit`;
+        }
+        currentRegion = 'ALL';
+      } else if (cycleKey === 'W41') {
+        if (btnW41) btnW41.classList.add('active');
         activeDataset = datasetW41;
         allRecords = datasetW41.records || [];
-        cycleBadge.textContent = 'GTM EXECUTIVE · W41 (LIVE)';
-        cycleMeta.innerHTML = 'Chu kỳ dữ liệu: <strong>W37 – W41 (2026)</strong> · Cơ sở dữ liệu: <strong>Google Sheet Live (Tự động đồng bộ mỗi 30s)</strong>';
+        const pendingW41 = allRecords.filter(r => r.eval.status === 'CHƯA_FEEDBACK').length;
+        cycleBadge.textContent = 'GTM EXECUTIVE · W41 (ĐÃ CHỐT)';
+        cycleMeta.innerHTML = 'Chu kỳ dữ liệu: <strong>W37 – W41 (2026)</strong> · Cơ sở dữ liệu: <strong>Miền Trung Đã Chốt (11/11 Ca Đã Giải Trình)</strong>';
         colHeaderTrend.textContent = 'Biến Động 5 Tuần (W37 → W41)';
-        btnUrgentText.textContent = 'Đôn đốc Miền Trung (11 Tồn)';
+        btnUrgentText.textContent = `Đôn đốc Miền Trung (${pendingW41} Tồn)`;
         progressTitle.textContent = 'Tiến độ phản hồi & Thẩm định chất lượng số liệu W41';
-        if (liveSyncBadge) liveSyncBadge.style.display = 'inline-flex';
+        if (liveSyncBadge) liveSyncBadge.style.display = 'none';
+        const urlW41 = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID_W41}/edit?usp=sharing`;
+        if (btnOpenSheet) btnOpenSheet.href = urlW41;
+        if (syncModalLink) {
+          syncModalLink.href = urlW41;
+          syncModalLink.textContent = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID_W41}/edit`;
+        }
         currentRegion = 'ALL';
       } else {
-        btnW40.classList.add('active');
-        btnW41.classList.remove('active');
+        if (btnW40) btnW40.classList.add('active');
         activeDataset = datasetW40;
         allRecords = datasetW40.records || [];
         cycleBadge.textContent = 'GTM EXECUTIVE · W40';
@@ -2355,7 +2519,9 @@
     function setQuickPill(pill) {
       currentQuickPill = pill;
       document.querySelectorAll('.pill-btn').forEach(btn => btn.classList.remove('active'));
-      event.currentTarget.classList.add('active');
+      if (event && event.currentTarget) {
+        event.currentTarget.classList.add('active');
+      }
       applyFilters();
     }
 
@@ -2408,7 +2574,7 @@
 
         // Full text search
         if (searchVal) {
-          const hay = `${r.store_code} ${r.store_name} ${r.province} ${r.brand} ${r.sup} ${r.feedback_raw} ${r.extra_note || ''} ${r.eval.action_title}`.toLowerCase();
+          const hay = `${r.store_code} ${r.store_name} ${r.province} ${r.brand} ${r.sup} ${r.feedback_raw} ${r.extra_note || ''} ${r.w41_hint || ''} ${r.eval.action_title}`.toLowerCase();
           if (!hay.includes(searchVal)) return false;
         }
 
@@ -2447,7 +2613,7 @@
       document.getElementById('kpiSuspicious').textContent = `${countSuspicious} ca`;
       const kpiSuspSub = document.getElementById('kpiSuspiciousSubtext');
       if (kpiSuspSub) {
-        if (countSuspicious === 0) {
+        if (countSuspicious === 0 && countPending === 0 && countDone > 0) {
           kpiSuspSub.textContent = '100% các ca lệch lớn đã được làm rõ bằng Extra Note';
         } else {
           kpiSuspSub.textContent = 'Về 0 hoặc lệch >8 nhưng giải trình chung chung';
@@ -2503,7 +2669,7 @@
       if (records.length === 0) {
         let emptyMsg = 'Không tìm thấy bản ghi nào khớp với điều kiện kiểm soát.';
         if (currentQuickPill === 'SUSPICIOUS') {
-          emptyMsg = 'Xuất sắc: Không có ca nào nghi vấn đối phó. 100% các ca biến động lớn đã được PC SUP giải trình thực tế bằng Extra Note.';
+          emptyMsg = 'Không có ca nào nghi vấn đối phó trong danh sách lọc hiện tại.';
         } else if (currentQuickPill === 'COMMERCIAL_RISK') {
           emptyMsg = 'An toàn: Không có ca nào rủi ro mất quầy hoặc sụt giảm SOF LG.';
         } else if (currentQuickPill === 'PENDING') {
@@ -2518,6 +2684,7 @@
         return;
       }
 
+      const isW42 = currentCycleKey === 'W42';
       const isW41 = currentCycleKey === 'W41';
 
       let rowsHtml = '';
@@ -2567,11 +2734,13 @@
         else if (r.delta_wow < 0) deltaHtml = `<span class="delta-badge delta-drop">${r.delta_wow}</span>`;
         else deltaHtml = `<span class="delta-badge delta-neutral">0</span>`;
 
-        // Dynamic 5-week history
-        const historyText = isW41
+        // Dynamic 5-week history (W42 vs W41 vs W40)
+        const historyText = isW42
+          ? `${r.w38}→${r.w39}→${r.w40}→${r.w41}`
+          : isW41
           ? `${r.w37}→${r.w38}→${r.w39}→${r.w40}`
           : `${r.w36}→${r.w37}→${r.w38}→${r.w39}`;
-        const currentQty = isW41 ? r.w41 : r.w40;
+        const currentQty = isW42 ? r.w42 : isW41 ? r.w41 : r.w40;
 
         let validityTag = '';
         if (ev.validity === 'PLAUSIBLE') {
@@ -2663,6 +2832,11 @@
                     Extra note:
                   </div>
                   <div class="extra-note-text">"${escapeHtml(r.extra_note)}"</div>
+                </div>
+              ` : ''}
+              ${r.w41_hint ? `
+                <div class="w41-hint-box">
+                  <strong>Lịch sử W41:</strong> ${escapeHtml(r.w41_hint)}
                 </div>
               ` : ''}
             </td>
@@ -2761,6 +2935,12 @@
               </div>
             ` : ''}
 
+            ${r.w41_hint ? `
+              <div class="w41-hint-box" style="margin-bottom: 10px;">
+                <strong>Lịch sử W41:</strong> ${escapeHtml(r.w41_hint)}
+              </div>
+            ` : ''}
+
             <div class="mcard-eval-tags">
               <div>${validityTag}</div>
               <div>${riskTag}</div>
@@ -2834,17 +3014,21 @@
 
     // Copy Regional Urgent Summary
     function copyRegionalUrgentSummary() {
-      if (currentCycleKey === 'W41') {
+      if (currentCycleKey === 'W42' || currentCycleKey === 'W41') {
         const pending = allRecords.filter(r => r.eval.status === 'CHƯA_FEEDBACK');
         const supCounts = {};
         pending.forEach(r => { supCounts[r.sup] = (supCounts[r.sup] || 0) + 1; });
+        const rangeLabel = currentCycleKey === 'W42' ? 'W38-W42' : 'W37-W41';
+        const sheetLink = currentCycleKey === 'W42'
+          ? `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID_W42}/edit?gid=${SHEET_GID}#gid=${SHEET_GID}`
+          : `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID_W41}/edit?usp=sharing`;
 
-        let msg = `[LG GTM · ĐÔN ĐỐC TIẾN ĐỘ SOF W41 - GỬI REGIONAL LEADER MIỀN TRUNG]\n`;
+        let msg = `[LG GTM · ĐÔN ĐỐC TIẾN ĐỘ SOF ${currentCycleKey} - GỬI REGIONAL LEADER MIỀN TRUNG]\n`;
         if (pending.length === 0) {
-          msg += `Tin tốt: 100% các ca bất thường Miền Trung đã được các SUP giải trình trên Google Sheet.\n`;
+          msg += `Tin tốt: 100% các ca bất thường Miền Trung (${rangeLabel}) đã được các SUP giải trình trên Google Sheet.\n`;
           msg += `GTM đang tiến hành thẩm định và xử lý các ca nghi vấn đối phó.\n`;
         } else {
-          msg += `Khu vực Miền Trung hiện còn ${pending.length} ca biến động bất thường chưa giải trình (W37-W41).\n\n`;
+          msg += `Khu vực Miền Trung hiện còn ${pending.length}/${allRecords.length} ca biến động bất thường chưa giải trình (${rangeLabel}).\n\n`;
           msg += `Danh sách PC Supervisors cần hoàn thành giải trình gấp:\n`;
 
           Object.entries(supCounts).sort((a,b) => b[1] - a[1]).forEach(([sup, cnt], idx) => {
@@ -2853,10 +3037,10 @@
 
           msg += `\nĐề nghị Regional Leader chỉ đạo các SUP phản hồi trên Google Sheet trước 17:00 Thứ 4 để GTM chốt số tuần.\n`;
         }
-        msg += `Link Google Sheet: https://docs.google.com/spreadsheets/d/1mpArbb5ShJqtWfgC8yB7pVv70tcTXK7XYKnxGWSGaws/edit?usp=sharing`;
+        msg += `Link Google Sheet: ${sheetLink}`;
 
         navigator.clipboard.writeText(msg).then(() => {
-          showToast('Đã sao chép nội dung đôn đốc Miền Trung.');
+          showToast(`Đã sao chép nội dung đôn đốc Miền Trung (${currentCycleKey}).`);
         });
       } else {
         const southRecords = allRecords.filter(r => r.region === 'South');
@@ -2909,9 +3093,12 @@
 
     // Export CSV Audit Report
     function exportAuditReportCSV() {
+      const isW42 = currentCycleKey === 'W42';
       const isW41 = currentCycleKey === 'W41';
       let csv = '\uFEFF';
-      csv += isW41
+      csv += isW42
+        ? 'Mã Shop,Tên Cửa Hàng,Đại Lý,Khu Vực,Tỉnh,PC Supervisor,PC Active,Ngành Hàng,Brand,W38,W39,W40,W41,W42,Delta_WoW,Cảnh Báo,Feedback PC SUP,Extra Note,Lịch Sử W41,Trạng Thái,Thẩm Định Hợp Lý,Chi Tiết Thẩm Định,Cấp Độ Rủi Ro,Mô Tả Rủi Ro,Action Khuyến Nghị GTM,Quyết Định GTM\n'
+        : isW41
         ? 'Mã Shop,Tên Cửa Hàng,Đại Lý,Khu Vực,Tỉnh,PC Supervisor,PC Active,Ngành Hàng,Brand,W37,W38,W39,W40,W41,Delta_WoW,Cảnh Báo,Feedback PC SUP,Extra Note,Trạng Thái,Thẩm Định Hợp Lý,Chi Tiết Thẩm Định,Cấp Độ Rủi Ro,Mô Tả Rủi Ro,Action Khuyến Nghị GTM,Quyết Định GTM\n'
         : 'Mã Shop,Tên Cửa Hàng,Đại Lý,Khu Vực,Tỉnh,PC Supervisor,PC Active,Ngành Hàng,Brand,W36,W37,W38,W39,W40,Delta_WoW,Cảnh Báo,Feedback PC SUP,Extra Note,Trạng Thái,Thẩm Định Hợp Lý,Chi Tiết Thẩm Định,Cấp Độ Rủi Ro,Mô Tả Rủi Ro,Action Khuyến Nghị GTM,Quyết Định GTM\n';
 
@@ -2924,11 +3111,17 @@
         if (r.flags.diff_2_prev) flagsList.push('Lệch >2 (WoW)');
         if (r.flags.lg_drop_50) flagsList.push('LG Giảm >50%');
 
-        const histVals = isW41
+        const histVals = isW42
+          ? `${r.w38},${r.w39},${r.w40},${r.w41},${r.w42}`
+          : isW41
           ? `${r.w37},${r.w38},${r.w39},${r.w40},${r.w41}`
           : `${r.w36},${r.w37},${r.w38},${r.w39},${r.w40}`;
 
-        csv += `"${r.store_code}","${r.store_name}","${r.dealer}","${r.region}","${r.province}","${r.sup}",${r.active_pc},"${r.category}","${r.brand}",${histVals},${r.delta_wow},"${flagsList.join('; ')}","${escapeCsv(r.feedback_raw)}","${escapeCsv(r.extra_note || '')}","${ev.status}","${ev.validity_label}","${escapeCsv(ev.validity_desc)}","${ev.risk_label}","${escapeCsv(ev.risk_desc)}","${escapeCsv(ev.action_title + ': ' + ev.action_detail)}","${dec}"\n`;
+        if (isW42) {
+          csv += `"${r.store_code}","${r.store_name}","${r.dealer}","${r.region}","${r.province}","${r.sup}",${r.active_pc},"${r.category}","${r.brand}",${histVals},${r.delta_wow},"${flagsList.join('; ')}","${escapeCsv(r.feedback_raw)}","${escapeCsv(r.extra_note || '')}","${escapeCsv(r.w41_hint || '')}","${ev.status}","${ev.validity_label}","${escapeCsv(ev.validity_desc)}","${ev.risk_label}","${escapeCsv(ev.risk_desc)}","${escapeCsv(ev.action_title + ': ' + ev.action_detail)}","${dec}"\n`;
+        } else {
+          csv += `"${r.store_code}","${r.store_name}","${r.dealer}","${r.region}","${r.province}","${r.sup}",${r.active_pc},"${r.category}","${r.brand}",${histVals},${r.delta_wow},"${flagsList.join('; ')}","${escapeCsv(r.feedback_raw)}","${escapeCsv(r.extra_note || '')}","${ev.status}","${ev.validity_label}","${escapeCsv(ev.validity_desc)}","${ev.risk_label}","${escapeCsv(ev.risk_desc)}","${escapeCsv(ev.action_title + ': ' + ev.action_detail)}","${dec}"\n`;
+        }
       });
 
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });

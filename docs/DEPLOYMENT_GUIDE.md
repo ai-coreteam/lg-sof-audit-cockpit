@@ -1,91 +1,78 @@
-# SOF Audit Cockpit — Cẩm Nang Triển Khai Web Online & Chia Sẻ (Deployment Guide)
+# Hướng Dẫn Vận Hành, Đồng Bộ & Triển Khai (Operations & Deployment Guide)
 
-*Last Updated: 2026-10-12 · Target Org: `ai-coreteam` · Architecture: Serverless Static Single-Page App (SPA)*
-
----
-
-## 1. Thông Tin Truy Cập Chính Thức (Official URLs) [VERIFIED]
-
-| Hạng Mục | Đường Dẫn Trực Tuyến | Mục Đích Sử Dụng |
-|---|---|---|
-| **🌐 Web Online (GitHub Pages)** | **[https://ai-coreteam.github.io/lg-sof-audit-cockpit/](https://ai-coreteam.github.io/lg-sof-audit-cockpit/)** | **Link chia sẻ chính thức** cho GTM Strategist, C-Level, Regional Leaders và PC Supervisors xem trên máy tính & điện thoại. |
-| **📦 GitHub Repository** | **[https://github.com/ai-coreteam/lg-sof-audit-cockpit](https://github.com/ai-coreteam/lg-sof-audit-cockpit)** | Quản lý mã nguồn, lịch sử cam kết, hệ thống tài liệu và bộ công cụ đồng bộ dữ liệu. |
-| **📊 Master Google Sheet** | **[SOF check W37-W41 (Middle)](https://docs.google.com/spreadsheets/d/1mpArbb5ShJqtWfgC8yB7pVv70tcTXK7XYKnxGWSGaws/edit?usp=sharing)** | Cơ sở dữ liệu nguồn nhập liệu giải trình của PC Supervisors. |
+> Tài liệu này hướng dẫn cách sử dụng **LG SOF Audit & Risk Governance Cockpit**, cơ chế đồng bộ thời gian thực với Google Sheet (`W38–W42`), cách chạy kiểm thử tự động và quy trình xuất bản lên GitHub Pages.
 
 ---
 
-## 2. Kiến Trúc Hoạt Động Trên Môi Trường Trực Tuyến (Serverless Cloud Architecture)
+## 1. Cách Mở & Sử Dụng Cockpit Hàng Ngày
 
-Hệ thống được thiết kế theo kiến trúc **Zero-Backend (Serverless Client-Side Engine)**:
+### Cách 1: Truy cập Bản Trực Tuyến (GitHub Pages — Khuyến nghị cho GTM & Mobile)
+- Mở trực tiếp đường dẫn: **`https://ai-coreteam.github.io/lg-sof-audit-cockpit/`** trên máy tính hoặc điện thoại.
 
-```mermaid
-graph TD
-    subgraph Data Layer (Google Cloud)
-        GS[(Master Google Sheet\nCheck theo CAT, theo Brand)]
-    end
+### Cách 2: Mở Trực Tiếp File Nội Bộ (Local File)
+- Mở trực tiếp file:
+  ```text
+  /Users/macbook/Documents/antigravity/AI study/LG other/SOF monitoring/app/index.html
+  ```
+- Hoặc chạy HTTP Server nội bộ:
+  ```bash
+  python3 -m http.server 8765
+  ```
+  Sau đó mở `http://localhost:8765/app/index.html`.
 
-    subgraph Hosting Layer (GitHub Cloud)
-        GH_REPO[GitHub Repository\nai-coreteam/lg-sof-audit-cockpit]
-        GH_PAGES[GitHub Pages CDN Engine\nhttps://ai-coreteam.github.io/lg-sof-audit-cockpit/]
-    end
+---
 
-    subgraph Client Runtime (Any Browser / Any Device)
-        BROWSER[Trình Duyệt Của Người Dùng\nLaptop, PC, iPhone, Android]
-        CACHE[Pre-bundled Datasets\nW41 Middle & W40 National]
-        LIVE_SYNC[Client Live Engine\nFetch CSV qua CORS mở]
-        STATE[Client LocalStorage\nLưu quyết định Duyệt / Bác bỏ]
-    end
+## 2. Cơ Chế Đồng Bộ Dữ Liệu 2 Lớp (Dual-Layer Sync Architecture)
 
-    GH_REPO -->|Tự động triển khai branch main| GH_PAGES
-    GH_PAGES -->|Phục vụ mã nguồn HTML/CSS/JS| BROWSER
-    BROWSER --> CACHE
-    BROWSER -->|Tự động đồng bộ mỗi 30s & khi focus tab| GS
-    GS -->|Phản hồi luồng dữ liệu CSV mới nhất| LIVE_SYNC
-    LIVE_SYNC --> BROWSER
-    BROWSER <--> STATE
+### Lớp 1: Đồng bộ Tự động Thời gian thực trên Trình duyệt (Browser Real-Time Live Sync)
+Khi bạn mở Cockpit ở chế độ **`W38–W42 (Google Sheet Live)`**, ứng dụng sẽ tự động kết nối tới endpoint CSV Export của Google Sheet tuần hiện tại:
+```text
+https://docs.google.com/spreadsheets/d/1lA6mxuh3yn6TMGWH8TIWOl6PWyKP5PeZ586sOnOGG40/export?format=csv&gid=1357809752
 ```
+- **Khi vừa mở trang:** Tự động tải dữ liệu mới nhất từ Google Sheet, tự động nhận diện thứ tự cột (`Region` / `PC Active`), đọc đầy cả các ô `Extra note` nhiều dòng (RFC-4180 CSV parser) và gắn nhãn gợi ý lịch sử W41 (`w41_hint`).
+- **Mỗi 30 giây:** Tự động quét ngầm trong nền và cập nhật giờ đồng bộ tại huy hiệu **`Live: HH:MM:SS`**.
+- **Khi chuyển tab quay lại (`window.focus`):** Ngay khi bạn vừa sửa trên Google Sheet và bấm quay lại tab Cockpit, hệ thống lập tức làm mới bảng dữ liệu.
+- **Ép đồng bộ thủ công:** Bấm trực tiếp vào nút **`Live Sync`** trên thanh Header bất kỳ lúc nào.
 
-### Ưu Điểm Tuyệt Đối Của Kiến Trúc:
-1. **Không Tốn Chi Phí Máy Chủ (Zero-Cost Hosting):** Vận hành 100% trên nền tảng GitHub Pages CDN toàn cầu của GitHub.
-2. **Không Cần Đăng Nhập / Phân Quyền Phức Tạp:** Link công khai cho nội bộ, bất kỳ nhân sự nào có link đều mở được ngay trên điện thoại hoặc máy tính mà không gặp rào cản firewall nhà máy.
-3. **Đồng Bộ Dữ Liệu Hai Tầng (Dual-Layer Sync):**
-   - **Tầng 1 (Tức thì):** File `index.html` tích hợp sẵn dữ liệu đệm (cached datasets) giúp trang tải tức thì trong `< 0.5s` mà không bao giờ bị màn hình trắng kể cả khi mạng yếu.
-   - **Tầng 2 (Real-time Live):** Trình duyệt tự động gọi API xuất CSV của Google Sheet để quét các phản hồi mới của PC SUP mỗi 30 giây và tính toán lại các cờ bất thường trong bộ nhớ RAM trình duyệt.
-
----
-
-## 3. Quy Trình Cập Nhật & Đẩy Code Lên GitHub (Developer Handover)
-
-Khi có bất kỳ thay đổi nào về giao diện, quy tắc kiểm tra (Sanity Check) hoặc bổ sung tài liệu:
+### Lớp 2: Đồng bộ & Lưu trữ Offline bằng Python (`scripts/sync_sheets.py`)
+Khi muốn lưu bản chụp (snapshot) từ Google Sheet vào các file tĩnh của dự án (`data/w42_audit_cockpit.json`, `app/assets/w42_audit_cockpit.js`, `assets/w42_audit_cockpit.js`) để đẩy lên GitHub Pages hoặc gửi file offline:
 
 ```bash
-# 1. Di chuyển vào thư mục dự án
-cd "/Users/macbook/Documents/antigravity/AI study/LG other/SOF monitoring"
-
-# 2. Cập nhật dữ liệu từ Google Sheet (tùy chọn)
 python3 scripts/sync_sheets.py
-
-# 3. Đồng bộ code từ app sang root (nếu có sửa đổi trong app/)
-cp app/index.html ./index.html
-cp -r app/assets/* ./assets/
-
-# 4. Kiểm tra trạng thái git
-git status
-
-# 5. Commit và đẩy lên GitHub
-git add .
-git commit -m "feat: [Mô tả nội dung thay đổi]"
-git push origin main
 ```
-
-Sau khi `git push origin main`, GitHub Pages sẽ tự động kích hoạt tiến trình triển khai và cập nhật website online trong vòng **15 – 30 giây**.
 
 ---
 
-## 4. Hướng Dẫn Chia Sẻ Link Cho Các Đối Tượng Người Dùng
+## 3. Chuyển Đổi Giữa 3 Chu Kỳ (`W38–W42 Live`, `W37–W41 Đã Chốt`, `W36–W40 Baseline`)
 
-### A. Gửi Cho C-Level / GTM Director:
-> *"Kính gửi Anh/Chị, GTM đã triển khai Hệ Thống Giám Sát & Quản Trị Rủi Ro SOF (W37–W41) trực tuyến tại đường dẫn: https://ai-coreteam.github.io/lg-sof-audit-cockpit/ . Hệ thống tự động đồng bộ real-time với Google Sheet của PC SUP, phân loại rủi ro mất quầy LG và kiểm soát giải trình qua loa."*
+Trên thanh điều hướng trên cùng (Header), bạn có thể chuyển đổi tức thời giữa 3 chu kỳ:
+1. **`W38–W42 (Google Sheet Live)`** *(Mặc định)*: Hiển thị **16 ca** cảnh báo mới nhất của khu vực Miền Trung tuần hiện tại, tự động đồng bộ mỗi 30 giây và hiển thị gợi ý lịch sử W41 (`w41_hint`) cho các ca lặp lại.
+2. **`W37–W41 (Middle Đã Chốt)`**: Hiển thị bản lưu trữ **11 / 11 ca (100%)** đã giải trình hoàn tất của khu vực Miền Trung tuần trước.
+3. **`W36–W40 (Baseline Toàn Quốc)`**: Hiển thị toàn bộ **632 ca** biến động trên **1.690 cửa hàng** toàn quốc (Bắc: 321 ca, Trung: 123 ca, Nam: 188 ca).
 
-### B. Gửi Cho Regional Leaders & PC Supervisors:
-> *"Team có thể truy cập link https://ai-coreteam.github.io/lg-sof-audit-cockpit/ trên điện thoại di động để kiểm tra tiến độ giải trình của khu vực mình phụ trách. Bấm vào tab 'Dạng Thẻ' để xem các ca cần bổ sung thông tin thực địa (Extra Note)."*
+> **Lưu ý về Quyết định Duyệt / Bác bỏ (`localStorage`):** Các quyết định bấm **Duyệt** hoặc **Bác bỏ / Đòi ảnh** của GTM được lưu tách biệt theo từng chu kỳ (`lg_gtm_decisions_W42`, `lg_gtm_decisions_W41`, `lg_gtm_decisions_W40`) nên không bao giờ bị ghi đè lẫn nhau.
+
+---
+
+## 4. Quy Trình Kiểm Thử & Triển Khai Lên GitHub Pages (`origin/main`)
+
+Trước mỗi lần đẩy code lên GitHub Pages, chạy bộ kiểm thử tự động và công cụ kiểm tra quản trị dự án:
+
+```bash
+# 1. Đồng bộ app/index.html ra ./index.html ở thư mục gốc
+cp app/index.html index.html
+
+# 2. Chạy bộ 11 bài kiểm thử tự động (Syntax, Parity, Multi-line CSV, Dealer CP, 3 Cycles)
+node tests/verify_cockpit.js
+
+# 3. Kiểm tra chuẩn Project Management & Quét bí mật
+python3 /Users/macbook/.gemini/config/skills/project-management/scripts/pm_check.py . --release v2.1.0
+python3 /Users/macbook/.gemini/config/skills/project-management/scripts/secret_scan.py --staged
+```
+
+Sau khi tất cả kiểm thử đều đạt (`11/11 PASS`, `0 error(s)`), commit và đẩy lên `origin/main`:
+```bash
+git add .
+git commit -m "Release v2.1.0: Integrate W38-W42 Live Google Sheet, 3-cycle switcher & W41 hints"
+git push origin main
+```

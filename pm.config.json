@@ -1,0 +1,50 @@
+{
+  "lang": "vi",
+  "type": "software",
+  "agents": "AGENTS.md",
+  "current_state": "docs/CURRENT_STATE.md",
+  "handoff": "docs/HANDOFF.md",
+  "brief": "docs/00-brief/BRIEF.md",
+  "changelog": "docs/04-releases/CHANGELOG.md",
+  "runbook": "docs/04-releases/RUNBOOK.md",
+  "decisions": "docs/05-decisions/DECISIONS.md",
+  "risks": "docs/07-risks/RISK_REGISTER.md",
+  "lessons": "docs/07-risks/LESSONS.md",
+  "changelog_columns": {
+    "date": [
+      "Date",
+      "Ngày"
+    ],
+    "version": [
+      "Version",
+      "Phiên bản",
+      "ID"
+    ],
+    "change": [
+      "Change",
+      "Thay đổi",
+      "Nội dung"
+    ],
+    "tests": [
+      "Tests",
+      "Kiểm thử",
+      "Test"
+    ],
+    "rollback": [
+      "Rollback",
+      "Quay lại",
+      "Điểm quay lại"
+    ],
+    "approved": [
+      "Approved",
+      "Duyệt"
+    ]
+  },
+  "never_commit": [
+    ".env",
+    "feedback/*",
+    "scratch/",
+    "archive/"
+  ],
+  "adopted_on": "2026-10-19"
+}

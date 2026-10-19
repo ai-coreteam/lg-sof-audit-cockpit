@@ -1,106 +1,109 @@
-# SOF Monitoring Data Dictionary
+# Từ Điển Dữ Liệu & Quy Tắc Thẩm Định (Data Dictionary & Audit Rules)
 
-This document provides a verified, comprehensive mapping of data schemas across both the **Live Google Sheet Database (W37–W41)** and the **W40 Baseline Dataset (`SOF check W40.xlsx`)**.
-
----
-
-## 1. Live Google Sheet Database (`W37–W41`)
-
-- **Spreadsheet Title:** `SOF check W37-W41 (Middle)`
-- **Google Sheet URL:** [Google Sheets Live Link](https://docs.google.com/spreadsheets/d/1mpArbb5ShJqtWfgC8yB7pVv70tcTXK7XYKnxGWSGaws/edit?usp=sharing)
-- **Export Endpoint:** `https://docs.google.com/spreadsheets/d/1mpArbb5ShJqtWfgC8yB7pVv70tcTXK7XYKnxGWSGaws/export?format=xlsx`
-- **Automated Sync Script:** `python3 scripts/sync_sheets.py`
-- **Output Artifacts:** `data/w41_audit_cockpit.json` & `app/assets/w41_audit_cockpit.js`
-
-### 1.1. Sheet: `Check theo CAT, theo Brand` (Primary Audit Sheet)
-- **Active Data Rows:** 3,143 display lines (Middle Region)
-- **Grain:** 1 row per `Code Shop` + `CAT` + `Brand`
-- **Rolling Cycle:** W37, W38, W39, W40, W41 (Current audit week: **W41**)
-
-| Col # | Excel Col | Header Name | Data Type | Sample Value | Business Description |
-|---|---|---|---|---|---|
-| 0 | A | `Code Shop` | String | `EASV1004` | Store unique identifier (references Store Master) |
-| 1 | B | `Tên Shop` | String | `CONG TY TNHH TM DV XUAN HOA` | Retail shop commercial name |
-| 2 | C | `PC Sup` | String | `Trần Thanh Tuấn` | Assigned Field Supervisor (6 SUPs in Middle region) |
-| 3 | **D** | **`PC active`** | **Integer** | **`1`**, **`2`**, **`0`** | **[NEW COLUMN] Số lượng nhân viên PC đang trực tiếp làm việc tại shop** |
-| 4 | E | `Region` | String | `Middle` | Geographic territory (North / Middle / South) |
-| 5 | F | `CAT` | String | `REF`, `TV`, `WM`, `DW` | Product Category (10 active product groups) |
-| 6 | G | `Brand` | String | `LG`, `SS`, `Pana`, `Other` | Target Brand being audited |
-| 7 | H | `W37` | Integer | `11` | Display sets 4 weeks prior |
-| 8 | I | `W38` | Integer | `11` | Display sets 3 weeks prior |
-| 9 | J | `W39` | Integer | `12` | Display sets 2 weeks prior |
-| 10 | K | `W40` | Integer | `12` | Previous week display count ($W_{prev}$) |
-| 11 | L | `W41` | Integer | `15` | Current week display count ($W_{cur}$) |
-| 12 | M | `Chênh lệch hơn 2 so với tuần cũ` | Flag | `x` / Null | Triggered when $\|W41 - W40\| \ge 2$ (7 rows flagged in W41) |
-| 13 | N | `Chênh lệch hơn 8 so với 4 tuần trước` | Flag | `x` / Null | Triggered when $\|W41 - \min(W37..W40)\| \ge 8$ (4 rows flagged in W41) |
-| 14 | O | `Data về 0` | Flag | `x` / Null | Triggered when $W41 = 0$ and $W40 > 0$ (0 rows flagged in W41) |
-| 15 | P | `Feedback` | String | (Text) | Free-text explanation filled by PC Supervisor on Google Sheet |
-| 16 | Q | `Count số lỗi` | Integer | `1`, `2` | Formula `=countifs(M{row}:O{row},"x")` |
-| 17 | **R** | **`Extra note`** | **String** | **`"dọn kho & mang..."`** | **[NEW COLUMN] Ghi chú thực tế bổ sung từ PC Sup / Regional Manager để làm rõ nguyên nhân biến động sâu hoặc đính chính số lượng thực tế.** |
-
-> [!NOTE]
-> **Key Schema Evolutions (Column D & Column R Insertions):**
-> 1. **Column D (`PC active`):** Bổ sung số lượng nhân viên promoter túc trực tại sàn.
-> 2. **Column R (`Extra note`):** Bổ sung trường ghi chú thực địa giúp làm rõ ngữ cảnh biến động, phân biệt giữa đối phó qua loa và giải trình nghiệp vụ thực chất (dọn kho, cắt đảo kệ, chuyển model EOL chạy event, hoặc phát hiện số liệu khai khống 18 vs 27 sets). Khi cột này có nội dung, ca kiểm soát lập tức được chuyển hoàn toàn ra khỏi mục Nghi vấn đối phó theo nguyên tắc MECE để đảm bảo thông tin tinh gọn, không trùng lặp.
+> Tài liệu này định nghĩa chi tiết cấu trúc các bảng trong Google Sheet, ý nghĩa từng trường dữ liệu trong JSON/JS và hệ thống quy tắc thẩm định tự động (**Sanity Check & Risk Governance Matrix**) của **LG SOF Audit & Risk Governance Cockpit**.
 
 ---
 
-### 1.2. Sheet: `Mapping PC SUP` (Store Master in Live Google Sheet)
-- **Total Entities:** 1,690 Stores (Nationwide: North 948, Middle 391, South 351)
-- **Supervisor Coverage:** 28 Field Supervisors
+## 1. Cấu trúc Nguồn Dữ liệu Google Sheet (`Check theo CAT, theo Brand`)
 
-| Col # | Field Name | Type | Notes |
-|---|---|---|---|
-| 0 | `Code store` | String (PK) | Unique store identifier |
-| 1 | `Store` | String | Full commercial outlet name |
-| 2 | `Khu vực` | String | `North`, `Middle`, `South` |
-| 3 | `Tỉnh/TP` | String | Province / Municipality |
-| 4 | `Quận/Huyện` | String | District |
-| 5 | `Sup` | String | Assigned PC Supervisor |
-| 6..10 | `HA`, `HE`, `AC`, `HAC`, `CE` | Number | Category-specific promoter headcounts |
-| 11 | `Số lượng PC đang hoạt động` | Number | Total active promoters stationed at store (`active_pc`) |
+### 1.1. Bảng Mapping Cột — Chu kỳ `W38 – W42` (Google Sheet Live `1lA6mxuh3yn6TMGWH8TIWOl6PWyKP5PeZ586sOnOGG40`, `gid=1357809752`)
 
----
+> **Lưu ý kỹ thuật quan trọng (`[VERIFIED]`):** So với chu kỳ `W37–W41`, ở chu kỳ `W38–W42` vị trí cột **D** (`Region`) và cột **E** (`PC Active`) đã đảo chiều. Hệ thống đồng bộ (`scripts/sync_sheets.py` và `fetchGoogleSheetLive()` trong `app/index.html`) sử dụng cơ chế **Header-Aware Column Detection** để tự động nhận diện đúng vị trí cột dựa trên dòng tiêu đề.
 
-## 2. W40 Baseline Dataset (`SOF check W40.xlsx`)
-
-- **File Size:** 11.66 MB
-- **Cycle:** W36–W40 (Nationwide baseline with 632 flagged priority anomalies)
-- **Output Artifacts:** `data/w40_audit_cockpit.json` & `app/assets/w40_audit_cockpit.js`
-
-### 2.1. Sheet: `Check theo CAT, theo Brand` (W40)
-- **Volume:** 28,521 active data rows across North, Middle, South.
-- **Top 3 Priority Flags Evaluated:**
-  - `Data về 0` (Col N): 97 rows
-  - `Chênh lệch > 8 so với 4W cũ` (Col L): 121 rows
-  - `Chênh lệch > 2 so với tuần cũ` (Col M): 536 rows
-  - Total deduplicated flagged cases: **632 priority cases**.
+| Cột Excel | Chỉ số (0-based) | Tên Cột Gốc (`W38–W42`) | Tên Cột Gốc (`W37–W41`) | Kiểu Dữ Liệu | Mô Tả Chi Tiết |
+|---|---:|---|---|---|---|
+| **A** | `0` | `Code Shop` | `shop_code` | `String` | Mã định danh duy nhất của cửa hàng trên hệ thống LG (VD: `EASV4271`, `EASV10177`). |
+| **B** | `1` | `Tên Shop` | `New Format Name (update)` | `String` | Tên cửa hàng theo định dạng chuẩn (VD: `CP-NINH THUAN-PHAN RANG`, `CN Cty TNHH CaoPhong tai Quang Tri`). |
+| **C** | `2` | `PC SUP` | `PC SUP` | `String` | Họ và tên Quản lý khu vực (PC Supervisor) phụ trách điểm bán. |
+| **D** | `3` | `Region` | `PC active` *(ở W41)* | `String` | Khu vực địa lý (`North`, `Middle`, `South`). Hệ thống tự động bắt theo tên cột header. |
+| **E** | `4` | `PC Active` | `Region` *(ở W41)* | `Integer` | Số lượng nhân viên PG/PC đang hoạt động tại cửa hàng (`0` = White Spot không có PC; `>= 1` = Có PC cắm chốt). |
+| **F** | `5` | `CAT` | `Category` | `String` | Mã ngành hàng (`TV`, `WM`, `REF`, `RAC`, `AP`, `MWO`, `DW`, `VC`, `DEHUM`, `AV`). |
+| **G** | `6` | `Brand` | `Brand` | `String` | Thương hiệu (`LG`, `SS`, `Pana`, `Sony`, `TCL`, `Toshiba`, `Aqua`, `Sharp`, `Casper`, `Elux`, `Haier`, `Other`...). |
+| **H – L** | `7 – 11` | `W38`, `W39`, `W40`, `W41`, `W42` | `W37`..`W41` *(hoặc `W36`..`W40`)* | `Integer` | Số lượng máy trưng bày thực tế (sets) ghi nhận tại cửa hàng qua 5 tuần liên tiếp. |
+| **M** | `12` | `Chênh lệch hơn 2 so với tuần cũ` | `Chênh lệch hơn 2 so với tuần cũ` | `Flag (x)` | Đánh dấu `x` nếu `\|W_cur - W_prev\| > 2` sets. |
+| **N** | `13` | `Chênh lệch hơn 8 so với 4 tuần trước` | `Chênh lệch hơn 8 so với 4 tuần trước` | `Flag (x)` | Đánh dấu `x` nếu `\|W_cur - W_cur-4\| > 8` sets. |
+| **O** | `14` | `Data về 0` | `Data về 0` | `Flag (x)` | Đánh dấu `x` nếu tuần trước có trưng bày (`> 0`) nhưng tuần hiện tại rơi về `0`. |
+| **P** | `15` | `Feedback` | `Feedback` | `String` | Nội dung giải trình chuẩn hóa (dropdown) của PC Supervisor điền trên Google Sheet. |
+| **Q** | `16` | `Count số lỗi` | `Count số lỗi` | `Integer` | Tổng số cờ cảnh báo xuất hiện trên dòng đó (`0`, `1`, `2`, hoặc `3`). |
+| **R** | `17` | `Extra note` | *(Không tiêu đề - Ghi chú bổ sung)* | `String` | Ghi chú thực địa chi tiết do PC SUP bổ sung (hỗ trợ cả ô nhiều dòng liệt kê mã model lên/xuống kệ, số thực đếm...). |
 
 ---
 
-## 3. Standard Reason Dictionary (`Lý do`)
-
-Standardized explanation codes for supervisors on Google Sheet:
-1. `Shop báo tăng giảm đúng thực tế so với tuần trước đó`
-2. `Tuần cũ PC báo sai, tuần này điều chỉnh lại`
-3. `Shop tăng giảm trưng bày do relayout - bán bớt mẫu cũ`
-4. `Tăng do shop trưng thêm ở khu vực quầy kệ khác`
-5. `Giảm do cắt shop bỏ quầy trưng bày`
-6. `Shop tăng trưng bày do được đâu tư thêm bục kệ`
-7. `PC nhập sai cần điều chỉnh lại`
-8. `Khác`
+### 1.2. Bảng `Mapping PC SUP` (Sheet 2 trong `data/google_sheet_latest.xlsx`)
+- **Tổng số dòng:** `1.690` cửa hàng chuẩn hóa trên toàn quốc.
+- **Mục đích:** Cung cấp thông tin Master Data (`province`, `district`, `dealer`, `channel`, `active_pc`) để làm giàu (enrich) cho các dòng dữ liệu tải trực tiếp từ CSV Google Sheet (được nhúng sẵn vào `datasetW42.store_master`).
+- **Quy tắc phân loại Đại lý (`classify_dealer` / `inferDealerClient`):**
+  - Bắt đầu bằng `DMX` hoặc `ĐMX` -> **`DMX`** (`channel: "MC"`)
+  - Bắt đầu bằng `CP`, `CAO PHONG`, hoặc có chứa `CAOPHONG` viết liền (VD: `CN Cty TNHH CaoPhong tai Quang Tri`) -> **`CP`** (`channel: "MC"`)
+  - Bắt đầu bằng `MM` -> **`MM`** (`channel: "MC"`)
+  - Bắt đầu bằng `VHC` -> **`VHC`** (`channel: "MC"`)
+  - Các trường hợp còn lại -> **`Tradi`** (`channel: "Traditional"`)
 
 ---
 
-## 4. Client-side State Persistence Schema (Lưu Trữ Cục Bộ Trình Duyệt)
+## 2. Cấu trúc Bản ghi Đã Thẩm định (`w42_audit_cockpit.json`, `w41_audit_cockpit.json`, `w40_audit_cockpit.json`)
 
-Hệ thống duy trì trạng thái thẩm định của GTM Strategist trực tiếp trên trình duyệt máy khách (Client-side LocalStorage) để không làm ảnh hưởng hay ghi đè vào dữ liệu gốc của Google Sheet:
+Mỗi bản ghi (`record`) trong mảng `records` của file JSON/JS có cấu trúc chuẩn như sau:
 
-| Khóa Lưu Trữ (Key) | Kiểu Dữ Liệu | Chu Kỳ Áp Dụng | Mô Tả Ý Nghĩa |
-|---|---|---|---|
-| `lg_gtm_decisions_W41` | JSON String | Chu kỳ W41 Live | Lưu bản đồ quyết định của GTM: `{ [recordId: string]: "APPROVED" \| "REJECTED" }`. |
-| `lg_gtm_decisions_W40` | JSON String | Chu kỳ W40 Baseline | Lưu bản đồ quyết định của GTM cho 632 ca lịch sử W40. |
-| `currentMobileViewMode` | In-memory State | Toàn cục di động | Lưu trạng thái hiển thị trên di động (`"CARD"`: Dạng Thẻ dọc, `"TABLE"`: Bảng cuộn ngang). |
+```json
+{
+  "id": "EASV4271_WM_Aqua",
+  "store_code": "EASV4271",
+  "store_name": "CP-NINH THUAN-PHAN RANG",
+  "dealer": "CP",
+  "channel": "MC",
+  "region": "Middle",
+  "province": "Ninh Thuan",
+  "district": "Thành phố Phan Rang-Tháp Chàm",
+  "sup": "Dương Nguyên Trà My",
+  "active_pc": 2,
+  "category": "WM",
+  "brand": "Aqua",
+  "w38": 23,
+  "w39": 23,
+  "w40": 23,
+  "w41": 23,
+  "w42": 19,
+  "delta_wow": -4,
+  "flags": {
+    "diff_8_4w": false,
+    "diff_2_prev": true,
+    "zero_drop": false,
+    "lg_drop_50": false
+  },
+  "feedback_raw": "Shop báo tăng giảm đúng thực tế so với tuần trước đó",
+  "extra_note": "Chuyển model cũ về kho An hạ\nAW10-B4959U1K(B)\nAW10-BP4959U1K(B)\nAW12-B4377U1L(GN)",
+  "w41_hint": "",
+  "eval": {
+    "status": "ĐÃ_FEEDBACK",
+    "validity": "PLAUSIBLE",
+    "validity_label": "Đã làm rõ (Extra Note)",
+    "validity_desc": "SUP bổ sung: \"Chuyển model cũ về kho An hạ · AW10-B4959U1K(B) · AW10-BP4959U1K(B) · AW12-B4377U1L(GN)\". Đã làm rõ nguyên nhân biến động thực tế.",
+    "risk_level": "P3_NORMAL",
+    "risk_label": "Biến động đã làm rõ",
+    "risk_desc": "Cửa hàng đã giải trình cụ thể biến động thực tế.",
+    "action_code": "ACCEPT",
+    "action_title": "Phê duyệt giải trình (Có Extra Note)",
+    "action_detail": "Chấp thuận do SUP đã bổ sung nguyên nhân thực địa: 'Chuyển model cũ về kho An hạ · AW10-B4959U1K(B) · AW10-BP4959U1K(B) · AW12-B4377U1L(GN)'."
+  }
+}
+```
 
-> [!TIP]
-> Khi người dùng bấm **"Duyệt"** hoặc **"Bác bỏ / Đòi ảnh"** (trên cả giao diện Desktop hay Thẻ Mobile), hệ thống tự động cập nhật vào `localStorage`, đồng bộ lại bộ lọc và phát tín hiệu Toast xác nhận. Trạng thái này được bảo lưu nguyên vẹn kể cả khi trang tự động đồng bộ lại số liệu mới từ Google Sheet sau mỗi 30 giây.
+---
+
+## 3. Ma trận Quy tắc Thẩm định & Quản trị Rủi ro (Sanity Check & Risk Governance Matrix)
+
+Hệ thống áp dụng bộ quy tắc đánh giá tự động theo thứ tự ưu tiên nghiêm ngặt (Strict Priority Order) và **Phân tách Độc lập (MECE Separation)**:
+
+| Thứ tự | Mã Quy Tắc | Điều Kiện Kích Hoạt (Trigger Condition) | Kết Quả Thẩm Định (`validity`) | Cấp Độ Rủi Ro (`risk_level`) | Mã Hành Động (`action_code`) | Khuyến Nghị Hành Động Cho GTM |
+|---:|---|---|---|---|---|---|
+| **1** | `RULE-PENDING` | `feedback_raw` trống **VÀ** `extra_note` trống | `PENDING` *(Chưa có phản hồi)* | `HIGH` *(Rủi ro tồn đọng)* | `PUSH_SUP` | **Đôn đốc phản hồi gấp:** Gửi tin nhắn cảnh báo yêu cầu SUP xác minh trước 17:00 Thứ 4. |
+| **2** | `RULE-SAN-03` | `feedback_raw` chứa *"báo sai"*, *"nhập sai"*, *"điều chỉnh lại"* (kể cả khi có kèm `extra_note` giải thích thêm) | `PC_ERROR` *(Thừa nhận PC báo sai)* | `P2_OPERATIONAL` *(Lỗi vận hành PC)* | `COACH_PC` | **Kiểm điểm & Đào tạo PC:** Yêu cầu SUP chấn chỉnh quy trình kiểm đếm của PC tại điểm bán (hiển thị kèm `extra_note` nếu có). |
+| **3** | `RULE-EXTRA-01` | Có `extra_note` chứa từ khóa đính chính số liệu (*"số đúng là"*, *"không phải"*, *"sets"*, *"sai số"*, *"lệch số"*, *"week trước chỉ"*) | `DATA_MISMATCH` *(Sai lệch số thực tế)* | `P2_OPERATIONAL` *(Dữ liệu Sheet bị lệch số)* | `CORRECT_DATA` | **Bác bỏ & Hiệu chỉnh số liệu:** Yêu cầu sửa lại số đúng trên bảng chính thức theo ghi chú thực tế và kiểm điểm PC. |
+| **4** | `RULE-EXTRA-02` | Có `extra_note` chứa từ khóa thu hẹp kệ đối thủ (*"cắt"*, *"bỏ mẫu"*, *"đảo"*, không phải đảo mẫu *"lên ... cắt ..."*) và `brand != "LG"` | `PLAUSIBLE` *(Đã làm rõ - Extra Note)* | `P3_NORMAL` *(Đối thủ bị cắt giảm)* | `EXPAND_LG` | **Tận dụng chiếm đảo kệ:** Đề xuất làm việc với cửa hàng để đưa thêm sản phẩm LG vào vị trí trống của đối thủ. |
+| **5** | `RULE-EXTRA-03` | Có bất kỳ nội dung `extra_note` giải trình thực địa nào khác (liệt kê mã model mới lên/xuống kệ, chuyển kho EOL, dọn kho...) | `PLAUSIBLE` *(Đã làm rõ - Extra Note)* | `P3_NORMAL` *(Biến động đã làm rõ)* | `ACCEPT` | **Phê duyệt giải trình (Có Extra Note):** Chấp thuận giải trình thực địa và loại khỏi nhóm nghi vấn đối phó. |
+| **6** | `RULE-SAN-01` | Không có `extra_note`, `zero_drop == true` VÀ `feedback_raw` ghi *"tăng giảm đúng thực tế"* | `SUSPICIOUS` *(Nghi vấn đối phó)* | `P0_CRITICAL` (nếu `LG`) / `P1_SUSPICIOUS` (nếu đối thủ) | `REJECT_AND_AUDIT` | **Bác bỏ & Đòi ảnh thực tế:** Từ chối duyệt. Yêu cầu SUP gửi ảnh chụp kệ thực tế trong 24h hoặc bổ sung `Extra note`. |
+| **7** | `RULE-SAN-02` | Không có `extra_note`, `diff_8_4w == true` VÀ `feedback_raw` ghi *"tăng giảm đúng thực tế"* | `SUSPICIOUS` *(Nghi vấn đối phó)* | `P1_SUSPICIOUS` *(Nghi vấn đối phó)* | `REJECT_AND_AUDIT` | **Yêu cầu ảnh & Biên bản:** Yêu cầu SUP giải trình chi tiết lý do biến động đột biến hoặc điền `Extra note`. |
+| **8** | `RULE-COMM-01` | `feedback_raw` chứa *"cắt shop"*, *"bỏ quầy"*, *"dồn quầy"*, *"hạ bục"*, *"thu hồi"* | `PLAUSIBLE` *(Hợp lý - Có căn cứ)* | `P0_CRITICAL` (nếu `LG`) / `P1_COMMERCIAL` (nếu đối thủ) | `ESCALATE_KAM` | **Can thiệp KAM khẩn cấp:** Báo cáo Head of GTM & làm việc với KAM để bảo vệ hợp đồng quầy kệ. |
+| **9** | `RULE-LG-DROP` | `brand == "LG"` VÀ `delta_wow <= -2` | `PLAUSIBLE` *(Hợp lý đạt chuẩn)* | `P0_CRITICAL` *(Rủi ro giảm trưng bày LG)* | `ESCALATE_KAM` | **Theo dõi SOF & Kiểm tra shop:** Kiểm tra lý do giảm model LG và đôn đốc đưa thêm hàng trưng bày. |
+| **10** | `RULE-DEFAULT` | Các trường hợp giải trình hợp lệ còn lại | `PLAUSIBLE` *(Hợp lý đạt chuẩn)* | `P3_NORMAL` *(Biến động bình thường)* | `ACCEPT` | **Phê duyệt giải trình:** Chấp thuận dữ liệu đưa vào báo cáo SOF chính thức. |
