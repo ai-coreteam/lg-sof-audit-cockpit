@@ -190,7 +190,7 @@ def evaluate_feedback(record):
     # Rule SAN-EXTRA: If SUP provided an Extra note, this case is EXCLUSIVELY clarified via Extra Note
     if extra_note:
         # Check if it's count correction / data mismatch (including "week trước chỉ 44set")
-        if any(k in extra_lower for k in ["số đúng là", "không phải", "khổng phải", "sets", "sai số", "lệch số", "nhập nhầm", "week trước chỉ", "tuần trước chỉ"]):
+        if any(k in extra_lower for k in ["số đúng là", "không phải", "khổng phải", "sai số", "lệch số", "nhập nhầm", "week trước chỉ", "tuần trước chỉ", "check data"]):
             return {
                 "status": "ĐÃ_FEEDBACK",
                 "validity": "DATA_MISMATCH",

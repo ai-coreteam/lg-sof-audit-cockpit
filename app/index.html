@@ -1534,7 +1534,7 @@
       </button>
       <button class="btn btn-secondary" id="btnUrgentPush" onclick="copyRegionalUrgentSummary()">
         <svg class="icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-        <span id="btnUrgentPushText">Đôn đốc Miền Trung (7 Tồn)</span>
+        <span id="btnUrgentPushText">Đôn đốc Miền Trung (0 Tồn)</span>
       </button>
       <button class="btn btn-primary" onclick="exportAuditReportCSV()">
         <svg class="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -1575,16 +1575,16 @@
           <span>1. Tiến Độ Đã Feedback</span>
           <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
         </div>
-        <div class="kpi-value" id="kpiDoneCount">9 / 16</div>
-        <div class="kpi-subtext" id="kpiDonePercent">Tỷ lệ: 56% khu vực đã lọc</div>
+        <div class="kpi-value" id="kpiDoneCount">16 / 16</div>
+        <div class="kpi-subtext" id="kpiDonePercent">Tỷ lệ: 100% khu vực đã lọc</div>
       </div>
 
       <div class="kpi-card kpi-pending" onclick="setQuickPill('PENDING')">
         <div class="kpi-label">
           <span>Chưa Phản Hồi (Tồn Đọng)</span>
-          <span class="badge-count badge-alert" id="kpiPendingBadge">7</span>
+          <span class="badge-count badge-alert" id="kpiPendingBadge">0</span>
         </div>
-        <div class="kpi-value" style="color: #c2410c;" id="kpiPendingCount">7 ca</div>
+        <div class="kpi-value" style="color: #c2410c;" id="kpiPendingCount">0 ca</div>
         <div class="kpi-subtext">Cần đôn đốc gấp trước thứ 4</div>
       </div>
 
@@ -1594,7 +1594,7 @@
           <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         </div>
         <div class="kpi-value" style="color: var(--lg-active-red);" id="kpiRiskP0">0 ca</div>
-        <div class="kpi-subtext" id="kpiRiskSubtext">Chờ kết quả feedback từ SUP</div>
+        <div class="kpi-subtext" id="kpiRiskSubtext">Không phát hiện mất quầy LG</div>
       </div>
 
       <div class="kpi-card kpi-suspicious" onclick="setQuickPill('SUSPICIOUS')">
@@ -1620,10 +1620,10 @@
     <section class="progress-section">
       <div class="progress-header">
         <span id="progressBarTitle">Tiến độ phản hồi & Thẩm định chất lượng số liệu W42</span>
-        <span id="progressBarLabel">9 Đã làm / 7 Còn tồn</span>
+        <span id="progressBarLabel">16 Đã làm / 0 Còn tồn</span>
       </div>
       <div class="progress-bar-bg">
-        <div class="progress-bar-fill-done" id="barDone" style="width: 56%;"></div>
+        <div class="progress-bar-fill-done" id="barDone" style="width: 100%;"></div>
         <div class="progress-bar-fill-suspicious" id="barSuspicious" style="width: 0%;"></div>
       </div>
     </section>
@@ -1635,7 +1635,7 @@
       </button>
       <button class="pill-btn pill-warning" onclick="setQuickPill('PENDING')">
         <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        Chưa feedback (<span id="pillPending">7</span>)
+        Chưa feedback (<span id="pillPending">0</span>)
       </button>
       <button class="pill-btn pill-danger" onclick="setQuickPill('COMMERCIAL_RISK')">
         <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
@@ -1651,11 +1651,11 @@
       </button>
       <button class="pill-btn" onclick="setQuickPill('PLAUSIBLE')">
         <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-        Hợp lý đạt chuẩn (<span id="pillPlausible">5</span>)
+        Hợp lý đạt chuẩn (<span id="pillPlausible">12</span>)
       </button>
       <button class="pill-btn" onclick="setQuickPill('HAS_EXTRA_NOTE')" style="border-color: #fde047; color: #854d0e; background: #fefce8;">
         <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-        Có Extra note (<span id="pillExtraNote">6</span>)
+        Có Extra note (<span id="pillExtraNote">16</span>)
       </button>
       <button class="pill-btn" onclick="setQuickPill('LG_ONLY')">
         Thương hiệu LG (<span id="pillLG">3</span>)
@@ -2035,7 +2035,7 @@
           extraLower.includes('số đúng là') ||
           extraLower.includes('không phải') ||
           extraLower.includes('khổng phải') ||
-          extraLower.includes('sets') ||
+          extraLower.includes('check data') ||
           extraLower.includes('sai số') ||
           extraLower.includes('lệch số') ||
           extraLower.includes('nhập nhầm') ||

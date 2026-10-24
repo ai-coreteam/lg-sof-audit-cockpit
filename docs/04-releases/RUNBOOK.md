@@ -3,12 +3,13 @@
 ## 1. Điểm quay lại (mỗi lần phát hành 1 dòng, viết TRƯỚC khi phát hành)
 | Phát hành | Điểm quay lại | Cách quay lại |
 |---|---|---|
+| `v2.1.1` (2026-10-19) | `7231346` (`v2.1.0` W42 Initial 9/16 Release) | `git checkout 7231346 -- app/ index.html assets/ data/ scripts/ && git commit -m "Rollback to v2.1.0 (7231346)" && git push origin main` |
 | `v2.1.0` (2026-10-19) | `9df1f2c` (`W37–W41` 100% Extra Note Release) | `git checkout 9df1f2c -- app/ index.html assets/ data/ scripts/ && git commit -m "Rollback to v2.0.0 (9df1f2c)" && git push origin main` |
 | `v2.0.0` (2026-10-12) | `321258e` | `git checkout 321258e -- app/ index.html assets/ data/ scripts/` |
 
 ## 2. Quy trình phát hành
 1. Mọi bộ test đạt (`node tests/verify_cockpit.js` = 11/11 PASS).
-2. Viết dòng CHANGELOG + dòng quay lại; `pm_check.py . --release v2.1.0` = 0 ERROR.
+2. Viết dòng CHANGELOG + dòng quay lại; `pm_check.py . --release v2.1.1` = 0 ERROR.
 3. `secret_scan.py --staged` = 0.
 4. Commit, tag, fetch + gộp remote (không ép), push lên `origin/main` (`https://github.com/ai-coreteam/lg-sof-audit-cockpit`).
 5. Triển khai GitHub Pages (`https://ai-coreteam.github.io/lg-sof-audit-cockpit/`); kiểm bản chạy thật.

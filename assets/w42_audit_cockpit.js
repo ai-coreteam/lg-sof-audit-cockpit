@@ -79,19 +79,19 @@ window.SOF_AUDIT_DATA_W42 = {
         "lg_drop_50": false
       },
       "feedback_raw": "Tuần cũ PC báo sai, tuần này điều chỉnh lại (Refresh data)",
-      "extra_note": "SS cắt TB WM ,Display WM SS:0",
+      "extra_note": "SS cắt TB WM ,Display WM SS:0, Shop không có PC SS",
       "w41_hint": "",
       "eval": {
         "status": "ĐÃ_FEEDBACK",
         "validity": "PC_ERROR",
         "validity_label": "Thừa nhận PC báo sai",
-        "validity_desc": "SUP thừa nhận PC báo sai tuần cũ; bổ sung thực tế: \"SS cắt TB WM ,Display WM SS:0\".",
+        "validity_desc": "SUP thừa nhận PC báo sai tuần cũ; bổ sung thực tế: \"SS cắt TB WM ,Display WM SS:0, Shop không có PC SS\".",
         "risk_level": "P2_OPERATIONAL",
         "risk_label": "Lỗi vận hành PC",
         "risk_desc": "Số liệu quá khứ không đáng tin cậy. Cần kiểm điểm kỷ luật PC.",
         "action_code": "COACH_PC",
         "action_title": "Kiểm điểm & Đào tạo PC",
-        "action_detail": "Kiểm điểm PC báo sai tuần cũ & cập nhật theo thực địa: 'SS cắt TB WM ,Display WM SS:0'."
+        "action_detail": "Kiểm điểm PC báo sai tuần cũ & cập nhật theo thực địa: 'SS cắt TB WM ,Display WM SS:0, Shop không có PC SS'."
       }
     },
     {
@@ -119,20 +119,20 @@ window.SOF_AUDIT_DATA_W42 = {
         "zero_drop": false,
         "lg_drop_50": false
       },
-      "feedback_raw": "",
-      "extra_note": "",
+      "feedback_raw": "Shop báo tăng giảm đúng thực tế so với tuần trước đó",
+      "extra_note": "cắt quầy FB1209S5W",
       "w41_hint": "",
       "eval": {
-        "status": "CHƯA_FEEDBACK",
-        "validity": "PENDING",
-        "validity_label": "Chưa có phản hồi",
-        "validity_desc": "PC SUP chưa điền giải trình trên Google Sheet",
-        "risk_level": "HIGH",
-        "risk_label": "Rủi ro tồn đọng",
-        "risk_desc": "Cần đôn đốc SUP phản hồi gấp trước hạn chốt tuần",
-        "action_code": "PUSH_SUP",
-        "action_title": "Đôn đốc phản hồi gấp",
-        "action_detail": "Gửi tin nhắn cảnh báo yêu cầu SUP xác minh trong ngày."
+        "status": "ĐÃ_FEEDBACK",
+        "validity": "PLAUSIBLE",
+        "validity_label": "Đã làm rõ (Extra Note)",
+        "validity_desc": "SUP bổ sung: \"cắt quầy FB1209S5W\". Đã làm rõ nguyên nhân biến động thực tế.",
+        "risk_level": "P3_NORMAL",
+        "risk_label": "Biến động đã làm rõ",
+        "risk_desc": "Cửa hàng đã giải trình cụ thể biến động thực tế.",
+        "action_code": "ACCEPT",
+        "action_title": "Phê duyệt giải trình (Có Extra Note)",
+        "action_detail": "Chấp thuận do SUP đã bổ sung nguyên nhân thực địa: 'cắt quầy FB1209S5W'."
       }
     },
     {
@@ -160,20 +160,20 @@ window.SOF_AUDIT_DATA_W42 = {
         "zero_drop": false,
         "lg_drop_50": false
       },
-      "feedback_raw": "",
-      "extra_note": "",
+      "feedback_raw": "Shop báo tăng giảm đúng thực tế so với tuần trước đó",
+      "extra_note": "Lên thêm trưng bày 6 sets LG  55NU855BPSA, 65Qned81BSA,65B6BPSA, 55Qned81BSA, 65NU855BPSA, 75NU855BPSA.",
       "w41_hint": "",
       "eval": {
-        "status": "CHƯA_FEEDBACK",
-        "validity": "PENDING",
-        "validity_label": "Chưa có phản hồi",
-        "validity_desc": "PC SUP chưa điền giải trình trên Google Sheet",
-        "risk_level": "HIGH",
-        "risk_label": "Rủi ro tồn đọng",
-        "risk_desc": "Cần đôn đốc SUP phản hồi gấp trước hạn chốt tuần",
-        "action_code": "PUSH_SUP",
-        "action_title": "Đôn đốc phản hồi gấp",
-        "action_detail": "Gửi tin nhắn cảnh báo yêu cầu SUP xác minh trong ngày."
+        "status": "ĐÃ_FEEDBACK",
+        "validity": "PLAUSIBLE",
+        "validity_label": "Đã làm rõ (Extra Note)",
+        "validity_desc": "SUP bổ sung: \"Lên thêm trưng bày 6 sets LG  55NU855BPSA, 65Qned81BSA,65B6BPSA, 55Qned81BSA, 65NU855BPSA, 75NU855BPSA.\". Đã làm rõ nguyên nhân biến động thực tế.",
+        "risk_level": "P3_NORMAL",
+        "risk_label": "Biến động đã làm rõ",
+        "risk_desc": "Cửa hàng đã giải trình cụ thể biến động thực tế.",
+        "action_code": "ACCEPT",
+        "action_title": "Phê duyệt giải trình (Có Extra Note)",
+        "action_detail": "Chấp thuận do SUP đã bổ sung nguyên nhân thực địa: 'Lên thêm trưng bày 6 sets LG  55NU855BPSA, 65Qned81BSA,65B6BPSA, 55Qned81BSA, 65NU855BPSA, 75NU855BPSA.'."
       }
     },
     {
@@ -201,20 +201,20 @@ window.SOF_AUDIT_DATA_W42 = {
         "zero_drop": false,
         "lg_drop_50": false
       },
-      "feedback_raw": "",
-      "extra_note": "",
+      "feedback_raw": "Shop báo tăng giảm đúng thực tế so với tuần trước đó",
+      "extra_note": "65C6K, 75C6K, 40S5",
       "w41_hint": "",
       "eval": {
-        "status": "CHƯA_FEEDBACK",
-        "validity": "PENDING",
-        "validity_label": "Chưa có phản hồi",
-        "validity_desc": "PC SUP chưa điền giải trình trên Google Sheet",
-        "risk_level": "HIGH",
-        "risk_label": "Rủi ro tồn đọng",
-        "risk_desc": "Cần đôn đốc SUP phản hồi gấp trước hạn chốt tuần",
-        "action_code": "PUSH_SUP",
-        "action_title": "Đôn đốc phản hồi gấp",
-        "action_detail": "Gửi tin nhắn cảnh báo yêu cầu SUP xác minh trong ngày."
+        "status": "ĐÃ_FEEDBACK",
+        "validity": "PLAUSIBLE",
+        "validity_label": "Đã làm rõ (Extra Note)",
+        "validity_desc": "SUP bổ sung: \"65C6K, 75C6K, 40S5\". Đã làm rõ nguyên nhân biến động thực tế.",
+        "risk_level": "P3_NORMAL",
+        "risk_label": "Biến động đã làm rõ",
+        "risk_desc": "Cửa hàng đã giải trình cụ thể biến động thực tế.",
+        "action_code": "ACCEPT",
+        "action_title": "Phê duyệt giải trình (Có Extra Note)",
+        "action_detail": "Chấp thuận do SUP đã bổ sung nguyên nhân thực địa: '65C6K, 75C6K, 40S5'."
       }
     },
     {
@@ -242,20 +242,20 @@ window.SOF_AUDIT_DATA_W42 = {
         "zero_drop": false,
         "lg_drop_50": false
       },
-      "feedback_raw": "",
-      "extra_note": "",
+      "feedback_raw": "Shop báo tăng giảm đúng thực tế so với tuần trước đó",
+      "extra_note": "Elec:\nMs:EDH903R7WC\nEDH803J5WC/J5SC\nMg: EWF1342R9SC",
       "w41_hint": "",
       "eval": {
-        "status": "CHƯA_FEEDBACK",
-        "validity": "PENDING",
-        "validity_label": "Chưa có phản hồi",
-        "validity_desc": "PC SUP chưa điền giải trình trên Google Sheet",
-        "risk_level": "HIGH",
-        "risk_label": "Rủi ro tồn đọng",
-        "risk_desc": "Cần đôn đốc SUP phản hồi gấp trước hạn chốt tuần",
-        "action_code": "PUSH_SUP",
-        "action_title": "Đôn đốc phản hồi gấp",
-        "action_detail": "Gửi tin nhắn cảnh báo yêu cầu SUP xác minh trong ngày."
+        "status": "ĐÃ_FEEDBACK",
+        "validity": "PLAUSIBLE",
+        "validity_label": "Đã làm rõ (Extra Note)",
+        "validity_desc": "SUP bổ sung: \"Elec: · Ms:EDH903R7WC · EDH803J5WC/J5SC · Mg: EWF1342R9SC\". Đã làm rõ nguyên nhân biến động thực tế.",
+        "risk_level": "P3_NORMAL",
+        "risk_label": "Biến động đã làm rõ",
+        "risk_desc": "Cửa hàng đã giải trình cụ thể biến động thực tế.",
+        "action_code": "ACCEPT",
+        "action_title": "Phê duyệt giải trình (Có Extra Note)",
+        "action_detail": "Chấp thuận do SUP đã bổ sung nguyên nhân thực địa: 'Elec: · Ms:EDH903R7WC · EDH803J5WC/J5SC · Mg: EWF1342R9SC'."
       }
     },
     {
@@ -283,20 +283,20 @@ window.SOF_AUDIT_DATA_W42 = {
         "zero_drop": false,
         "lg_drop_50": false
       },
-      "feedback_raw": "",
-      "extra_note": "",
+      "feedback_raw": "Shop báo tăng giảm đúng thực tế so với tuần trước đó",
+      "extra_note": "Pana : 6V4MUEVN , FVK16XEVN\nHitachi : F146VX",
       "w41_hint": "",
       "eval": {
-        "status": "CHƯA_FEEDBACK",
-        "validity": "PENDING",
-        "validity_label": "Chưa có phản hồi",
-        "validity_desc": "PC SUP chưa điền giải trình trên Google Sheet",
-        "risk_level": "HIGH",
-        "risk_label": "Rủi ro tồn đọng",
-        "risk_desc": "Cần đôn đốc SUP phản hồi gấp trước hạn chốt tuần",
-        "action_code": "PUSH_SUP",
-        "action_title": "Đôn đốc phản hồi gấp",
-        "action_detail": "Gửi tin nhắn cảnh báo yêu cầu SUP xác minh trong ngày."
+        "status": "ĐÃ_FEEDBACK",
+        "validity": "PLAUSIBLE",
+        "validity_label": "Đã làm rõ (Extra Note)",
+        "validity_desc": "SUP bổ sung: \"Pana : 6V4MUEVN , FVK16XEVN · Hitachi : F146VX\". Đã làm rõ nguyên nhân biến động thực tế.",
+        "risk_level": "P3_NORMAL",
+        "risk_label": "Biến động đã làm rõ",
+        "risk_desc": "Cửa hàng đã giải trình cụ thể biến động thực tế.",
+        "action_code": "ACCEPT",
+        "action_title": "Phê duyệt giải trình (Có Extra Note)",
+        "action_detail": "Chấp thuận do SUP đã bổ sung nguyên nhân thực địa: 'Pana : 6V4MUEVN , FVK16XEVN · Hitachi : F146VX'."
       }
     },
     {
@@ -324,20 +324,20 @@ window.SOF_AUDIT_DATA_W42 = {
         "zero_drop": false,
         "lg_drop_50": false
       },
-      "feedback_raw": "",
-      "extra_note": "",
+      "feedback_raw": "Shop báo tăng giảm đúng thực tế so với tuần trước đó",
+      "extra_note": "V800H.SS\nH1000J.PS\nDH1300H.PS",
       "w41_hint": "Lịch sử shop W41 (ngành khác): DW Junger (3→6): Feedback W41: \"Shop báo tăng giảm đúng thực tế so với tuần trước đó\" | DW Other (3→6): Feedback W41: \"Shop báo tăng giảm đúng thực tế so với tuần trước đó\"",
       "eval": {
-        "status": "CHƯA_FEEDBACK",
-        "validity": "PENDING",
-        "validity_label": "Chưa có phản hồi",
-        "validity_desc": "PC SUP chưa điền giải trình trên Google Sheet",
-        "risk_level": "HIGH",
-        "risk_label": "Rủi ro tồn đọng",
-        "risk_desc": "Cần đôn đốc SUP phản hồi gấp trước hạn chốt tuần",
-        "action_code": "PUSH_SUP",
-        "action_title": "Đôn đốc phản hồi gấp",
-        "action_detail": "Gửi tin nhắn cảnh báo yêu cầu SUP xác minh trong ngày."
+        "status": "ĐÃ_FEEDBACK",
+        "validity": "PLAUSIBLE",
+        "validity_label": "Đã làm rõ (Extra Note)",
+        "validity_desc": "SUP bổ sung: \"V800H.SS · H1000J.PS · DH1300H.PS\". Đã làm rõ nguyên nhân biến động thực tế.",
+        "risk_level": "P3_NORMAL",
+        "risk_label": "Biến động đã làm rõ",
+        "risk_desc": "Cửa hàng đã giải trình cụ thể biến động thực tế.",
+        "action_code": "ACCEPT",
+        "action_title": "Phê duyệt giải trình (Có Extra Note)",
+        "action_detail": "Chấp thuận do SUP đã bổ sung nguyên nhân thực địa: 'V800H.SS · H1000J.PS · DH1300H.PS'."
       }
     },
     {
@@ -489,19 +489,19 @@ window.SOF_AUDIT_DATA_W42 = {
         "lg_drop_50": false
       },
       "feedback_raw": "Tuần cũ PC báo sai, tuần này điều chỉnh lại (Refresh data)",
-      "extra_note": "",
+      "extra_note": "sup chủ động refresh data với PC",
       "w41_hint": "",
       "eval": {
         "status": "ĐÃ_FEEDBACK",
         "validity": "PC_ERROR",
         "validity_label": "Thừa nhận PC báo sai",
-        "validity_desc": "SUP thừa nhận nhân viên PC báo sai số tuần trước, tuần này sửa lại",
+        "validity_desc": "SUP thừa nhận PC báo sai tuần cũ; bổ sung thực tế: \"sup chủ động refresh data với PC\".",
         "risk_level": "P2_OPERATIONAL",
         "risk_label": "Lỗi vận hành PC",
         "risk_desc": "Số liệu quá khứ không đáng tin cậy. Cần kiểm điểm kỷ luật PC.",
         "action_code": "COACH_PC",
         "action_title": "Kiểm điểm & Đào tạo PC",
-        "action_detail": "Yêu cầu SUP đào tạo lại quy trình kiểm đếm cho PC tại điểm bán."
+        "action_detail": "Kiểm điểm PC báo sai tuần cũ & cập nhật theo thực địa: 'sup chủ động refresh data với PC'."
       }
     },
     {
@@ -530,19 +530,19 @@ window.SOF_AUDIT_DATA_W42 = {
         "lg_drop_50": false
       },
       "feedback_raw": "Tuần cũ PC báo sai, tuần này điều chỉnh lại (Refresh data)",
-      "extra_note": "",
+      "extra_note": "sup chủ động refresh data với PC",
       "w41_hint": "",
       "eval": {
         "status": "ĐÃ_FEEDBACK",
         "validity": "PC_ERROR",
         "validity_label": "Thừa nhận PC báo sai",
-        "validity_desc": "SUP thừa nhận nhân viên PC báo sai số tuần trước, tuần này sửa lại",
+        "validity_desc": "SUP thừa nhận PC báo sai tuần cũ; bổ sung thực tế: \"sup chủ động refresh data với PC\".",
         "risk_level": "P2_OPERATIONAL",
         "risk_label": "Lỗi vận hành PC",
         "risk_desc": "Số liệu quá khứ không đáng tin cậy. Cần kiểm điểm kỷ luật PC.",
         "action_code": "COACH_PC",
         "action_title": "Kiểm điểm & Đào tạo PC",
-        "action_detail": "Yêu cầu SUP đào tạo lại quy trình kiểm đếm cho PC tại điểm bán."
+        "action_detail": "Kiểm điểm PC báo sai tuần cũ & cập nhật theo thực địa: 'sup chủ động refresh data với PC'."
       }
     },
     {
@@ -571,19 +571,19 @@ window.SOF_AUDIT_DATA_W42 = {
         "lg_drop_50": false
       },
       "feedback_raw": "Tuần cũ PC báo sai, tuần này điều chỉnh lại (Refresh data)",
-      "extra_note": "",
+      "extra_note": "sup chủ động refresh data với PC",
       "w41_hint": "",
       "eval": {
         "status": "ĐÃ_FEEDBACK",
         "validity": "PC_ERROR",
         "validity_label": "Thừa nhận PC báo sai",
-        "validity_desc": "SUP thừa nhận nhân viên PC báo sai số tuần trước, tuần này sửa lại",
+        "validity_desc": "SUP thừa nhận PC báo sai tuần cũ; bổ sung thực tế: \"sup chủ động refresh data với PC\".",
         "risk_level": "P2_OPERATIONAL",
         "risk_label": "Lỗi vận hành PC",
         "risk_desc": "Số liệu quá khứ không đáng tin cậy. Cần kiểm điểm kỷ luật PC.",
         "action_code": "COACH_PC",
         "action_title": "Kiểm điểm & Đào tạo PC",
-        "action_detail": "Yêu cầu SUP đào tạo lại quy trình kiểm đếm cho PC tại điểm bán."
+        "action_detail": "Kiểm điểm PC báo sai tuần cũ & cập nhật theo thực địa: 'sup chủ động refresh data với PC'."
       }
     },
     {
@@ -652,20 +652,20 @@ window.SOF_AUDIT_DATA_W42 = {
         "zero_drop": false,
         "lg_drop_50": false
       },
-      "feedback_raw": "",
-      "extra_note": "",
+      "feedback_raw": "Shop báo tăng giảm đúng thực tế so với tuần trước đó",
+      "extra_note": "SS EOL, chuyển về các điện máy khác để chạy CT bỏ mẫu",
       "w41_hint": "Lịch sử shop W41 (ngành khác): REF LG (21→24): Feedback W41: \"Shop báo tăng giảm đúng thực tế so với tuần trước đó\" | WM Pana (27→27): Extra Note W41: \"số đúng là 18 sets, khổng phải 27\"",
       "eval": {
-        "status": "CHƯA_FEEDBACK",
-        "validity": "PENDING",
-        "validity_label": "Chưa có phản hồi",
-        "validity_desc": "PC SUP chưa điền giải trình trên Google Sheet",
-        "risk_level": "HIGH",
-        "risk_label": "Rủi ro tồn đọng",
-        "risk_desc": "Cần đôn đốc SUP phản hồi gấp trước hạn chốt tuần",
-        "action_code": "PUSH_SUP",
-        "action_title": "Đôn đốc phản hồi gấp",
-        "action_detail": "Gửi tin nhắn cảnh báo yêu cầu SUP xác minh trong ngày."
+        "status": "ĐÃ_FEEDBACK",
+        "validity": "PLAUSIBLE",
+        "validity_label": "Đã làm rõ (Extra Note)",
+        "validity_desc": "SUP bổ sung thông tin thực địa: \"SS EOL, chuyển về các điện máy khác để chạy CT bỏ mẫu\".",
+        "risk_level": "P3_NORMAL",
+        "risk_label": "Đối thủ SS bị cắt giảm",
+        "risk_desc": "Thị trường thu hẹp trưng bày model đối thủ SS tại cửa hàng.",
+        "action_code": "EXPAND_LG",
+        "action_title": "Tận dụng chiếm đảo kệ",
+        "action_detail": "SS bị cắt giảm trưng bày. Đề xuất làm việc với shop để đưa thêm sản phẩm LG vào đảo trống."
       }
     }
   ],

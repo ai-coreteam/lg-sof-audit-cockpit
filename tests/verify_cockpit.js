@@ -91,7 +91,7 @@ vm.runInContext(fs.readFileSync(path.join(ROOT, 'app/assets/w42_audit_cockpit.js
 vm.runInContext(scriptBlocks[0], sandbox);
 vm.runInContext('initStoreCache();', sandbox);
 
-check('Default cycle W42 loads 16 Middle region records (9 Done / 7 Pending)', () => {
+check('Default cycle W42 loads 16 Middle region records (16/16 Done, 0 Pending, 4 PC_ERROR, 16 Extra Notes)', () => {
   const res = vm.runInContext(`
     switchCycle('W42');
     ({
@@ -99,14 +99,18 @@ check('Default cycle W42 loads 16 Middle region records (9 Done / 7 Pending)', (
       total: allRecords.length,
       done: document.getElementById('kpiDoneCount').textContent,
       pending: document.getElementById('kpiPendingCount').textContent,
-      pcErr: document.getElementById('kpiPCError').textContent
+      pcErr: document.getElementById('kpiPCError').textContent,
+      plausible: document.getElementById('pillPlausible').textContent,
+      extraNote: document.getElementById('pillExtraNote').textContent
     });
   `, sandbox);
   assert.strictEqual(res.cycle, 'W42');
   assert.strictEqual(res.total, 16);
-  assert.strictEqual(res.done, '9 / 16');
-  assert.strictEqual(res.pending, '7 ca');
+  assert.strictEqual(res.done, '16 / 16');
+  assert.strictEqual(res.pending, '0 ca');
   assert.strictEqual(res.pcErr, '4 ca');
+  assert.strictEqual(String(res.plausible), '12');
+  assert.strictEqual(String(res.extraNote), '16');
 });
 
 check('CAOPHONG without space (EASV10177 in W42 & EASV10176 in W41) classifies as dealer CP (MC)', () => {
